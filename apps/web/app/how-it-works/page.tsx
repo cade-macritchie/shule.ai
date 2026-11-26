@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Accent, BRAND, Logo, StainedGlass, VERSE } from "@/components/brand";
+import { Accent, BRAND, Logo, VERSE } from "@/components/brand";
 import { VIDEO_PRICE } from "@/lib/pricing";
 
 export const metadata = {
@@ -21,12 +21,12 @@ const STEPS = [
     body: "They join from a link in their browser. No downloads, no Zoom. The interviewer asks how the work really happens: the steps, the systems, where things wait, and what goes wrong. They can share their screen to show it, and stop at any time.",
   },
   {
-    when: "After each interview", title: "Your docs and audit appear in your portal",
-    body: "We turn the conversation into clear process docs and a Lean Six Sigma audit with prioritized improvements. Anything we couldn't confirm becomes a short question for your team to answer.",
+    when: "After each interview", title: "Your docs and diagnosis appear in your portal",
+    body: "We turn the conversation into clear process docs and a Lean Six Sigma diagnosis of what is holding your constraint in place. That covers broken steps and missing practices: hiring that runs only on word of mouth is a cause, even if nothing is technically broken. Each cause gets a remedy, ranked by impact. Anything we couldn't confirm becomes a short question for your team.",
   },
   {
-    when: "Free preview, then your choice", title: "Watch a free preview, unlock the full fix",
-    body: "Each major problem comes with a free preview video that shows what's happening and why. When you want the fix, unlock the full guide: the future state, every build step, a roadmap and a control plan.",
+    when: "Free preview, then your choice", title: "Watch a free preview, unlock the remedy",
+    body: "Each major problem comes with a free preview video that shows what's happening and why. When you want the fix, unlock the full remedy: the video guide, a step-by-step build guide, and a ready-to-paste prompt so your team can implement it with an AI assistant.",
   },
 ];
 
@@ -34,8 +34,8 @@ const FREE = [
   "Outreach, scheduling and reminders for everyone you name",
   "AI interviews in the browser, with screen sharing",
   "Process docs: an interactive map of each flow and its procedures, with owners and systems",
-  "Lean Six Sigma audit: wastes, root causes, risk scores and an impact/effort view of every finding",
-  "A DMAIC roadmap and control plan for each finding",
+  "Lean Six Sigma diagnosis: wastes, root causes, missing practices, risk scores and an impact/effort view of every finding",
+  "A remedy for each cause, with a DMAIC roadmap and control plan",
   "A questions board, and docs that update as your team answers",
   "Re-run the audit or focus an optimization on one finding",
   "A free preview video for each major problem: current state, wastes and root cause",
@@ -46,12 +46,16 @@ const VIDEO = [
   "A 3–6 minute animated guide for one improvement",
   "Current state, root cause, future state and the build steps",
   "The real systems, fields, rules and owners involved",
+  "A step-by-step build guide you can hand to whoever does the work",
+  "A ready-to-paste prompt to implement it with an AI assistant",
   "A control plan so the gains stick",
   "Narration, captions, and an MP4 your team keeps",
 ];
 
 const FAQ = [
-  ["Is the interview and audit really free?", "Yes. The interviews, docs, audit and preview videos cost nothing. You only pay to unlock a full video guide, and only for the ones you choose."],
+  ["Is the interview and audit really free?", "Yes. The interviews, docs, audit and preview videos cost nothing. You only pay to unlock a full remedy (video, build guide and AI prompt), and only for the ones you choose."],
+  ["What if nothing is actually broken?", "Then the diagnosis says so, and looks for what's missing instead. Often the constraint comes from a practice the school never started: teachers found only by word of mouth, no follow-up after tours, no tuition model. Those get a remedy too."],
+  ["What's the AI prompt?", "Each unlocked remedy includes a prompt written for that fix, with your systems, fields and rules filled in. Paste it into an AI assistant and it walks your team through building it, step by step."],
   ["What's in the free preview video?", "The current state of the process, the wastes we found and the root cause, so you can see exactly what the problem is. It ends by listing what the full guide covers."],
   ["Why an AI interviewer?", "It can meet each person when it suits them, ask patient follow-up questions, and turn the conversation into docs right away. People can end the interview at any time."],
   ["Who sees the recordings?", "Only the people in your organization you give portal access to. Personal details on screen are blurred automatically, and raw recordings are deleted after 30 days."],
@@ -77,11 +81,11 @@ export default function HowItWorks() {
         <h1 className="h-hero" style={{ marginTop: 20 }}>From one conversation to work in <Accent>good order.</Accent></h1>
         <p className="muted" style={{ fontSize: 20, maxWidth: 720 }}>
           Here's exactly what happens when you start an engagement, what your team will be asked to do, and what you get.
-          The interviews, docs and audit are <b style={{ color: BRAND.deep }}>free</b>. Every major problem comes with a free preview video; unlocking the full guide is the only paid step.
+          The interviews, docs and audit are <b style={{ color: BRAND.deep }}>free</b>. Every major problem comes with a free preview video; unlocking the full remedy is the only paid step.
         </p>
       </header>
 
-      <div className="section"><StainedGlass height={90} /></div>
+      <div className="section"><div className="beam-rule" /></div>
 
       <section className="section" style={{ paddingTop: 56, maxWidth: 960 }}>
         <ol style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 18 }}>
@@ -100,7 +104,7 @@ export default function HowItWorks() {
 
       <section id="pricing" className="section" style={{ paddingTop: 72, maxWidth: 1080 }}>
         <h2 style={{ fontSize: "clamp(32px, 4vw, 44px)", fontWeight: 800, textAlign: "center", margin: "0 0 8px" }}>What you <Accent>get.</Accent></h2>
-        <p className="muted" style={{ textAlign: "center", margin: "0 auto 36px", maxWidth: 620 }}>Start free. Only pay for video guides, one improvement at a time.</p>
+        <p className="muted" style={{ textAlign: "center", margin: "0 auto 36px", maxWidth: 620 }}>Start free. Only pay for the remedies you want, one at a time.</p>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 24 }}>
           <div className="card" style={{ borderRadius: "200px 200px 28px 28px", padding: "72px 32px 32px" }}>
             <div style={{ textAlign: "center" }}>
@@ -115,9 +119,9 @@ export default function HowItWorks() {
           </div>
           <div style={{ background: BRAND.violet, color: "#fff", borderRadius: "200px 200px 28px 28px", padding: "72px 32px 32px" }}>
             <div style={{ textAlign: "center" }}>
-              <div style={{ fontSize: 14, fontWeight: 700, letterSpacing: ".08em", textTransform: "uppercase", color: BRAND.butter }}>Full video guide</div>
+              <div style={{ fontSize: 14, fontWeight: 700, letterSpacing: ".08em", textTransform: "uppercase", color: BRAND.butter }}>Full remedy</div>
               <div style={{ fontSize: 56, fontWeight: 800, letterSpacing: "-.03em", margin: "8px 0 4px" }}>{VIDEO_PRICE}</div>
-              <div style={{ color: "#E4DAF5" }}>per guide · unlock only the ones you want</div>
+              <div style={{ color: "#E4DAF5" }}>per remedy · unlock only the ones you want</div>
             </div>
             <ul style={{ margin: "24px 0 28px", paddingLeft: 20, display: "flex", flexDirection: "column", gap: 8 }}>
               {VIDEO.map(f => <li key={f}>{f}</li>)}

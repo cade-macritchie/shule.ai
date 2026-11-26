@@ -7,14 +7,24 @@ import bellImg from "./textures/school-bell.webp";
 const STEPS = [
   { n: 1, title: "Name your constraint", body: "Tell us what's holding the school back and who knows that work best. We handle invitations, booking and reminders.", bg: BRAND.blush, fg: "#A8341F" },
   { n: 2, title: "Your people just talk", body: "A patient AI interviewer asks how the work really runs, where it waits and what goes wrong. Screen sharing welcome.", bg: "#EDE6F6", fg: "#4A2F7A" },
-  { n: 3, title: "Fix the right thing first", body: "Docs, a Lean Six Sigma audit ranked by impact on your constraint, and the numbers behind it.", bg: "#FFF0CC", fg: "#7A5200" },
+  { n: 3, title: "Fix the right thing first", body: "A diagnosis of what is really holding the constraint in place, with the evidence, then a remedy for each cause, ranked by how much it frees the constraint.", bg: "#FFF0CC", fg: "#7A5200" },
 ];
 
 const DELIVERABLES = [
-  { title: "Docs your team will use", body: "An interactive map of how the work really runs, with owners, systems and open questions, kept current as answers come in.", bg: BRAND.blush, fg: BRAND.deep, sub: BRAND.ink2 },
-  { title: "An audit aimed at your constraint", body: "Wastes, root causes and risk scores, every finding tied to the constraint it moves and backed by a quote from the interview.", bg: BRAND.butter, fg: BRAND.deep, sub: BRAND.deep },
-  { title: "Videos that teach the fix", body: "A free preview for each major problem, and full step-by-step guides when you're ready to build.", bg: BRAND.violet, fg: "#fff", sub: "#E4DAF5" },
+  { k: "Docs", title: "Docs your team will use", body: "An interactive map of how the work really runs, with owners, systems and open questions, kept current as answers come in.", bg: BRAND.blush, fg: BRAND.deep, sub: BRAND.ink2 },
+  { k: "Diagnosis", title: "An audit aimed at your constraint", body: "Wastes, root causes, missing practices and risk scores, each tied to the constraint it holds back and backed by a quote from the interview.", bg: BRAND.butter, fg: BRAND.deep, sub: BRAND.deep },
+  { k: "Remedy", title: "Videos that teach the fix", body: "A short animated guide for each major remedy: what changes, why, and what it looks like when it's working. Free preview first.", bg: BRAND.violet, fg: "#fff", sub: "#E4DAF5" },
+  { k: "Build it", title: "A step-by-step guide and an AI prompt", body: "Numbered build steps for each remedy, plus a ready-to-paste prompt so your team can implement it with an AI assistant.", bg: BRAND.deep, fg: "#fff", sub: "#D9DEEC" },
 ];
+
+// Not every constraint comes from a broken process. Often it's a practice the school never started.
+const MISSING = [
+  { c: "Can't find good teachers", broken: "Applications sit in an inbox for two weeks", missing: "Hiring runs on word of mouth: no LinkedIn presence, no Christian-college pipeline, no referral program" },
+  { c: "Not enough students", broken: "Inquiries wait days for a first reply", missing: "No follow-up after tours, and no ambassador families telling their friends" },
+  { c: "Students aren't profitable", broken: "Aid is decided case by case, late, by email", missing: "No tuition model: nobody knows the real cost to serve one student" },
+  { c: "Don't know your CAC", broken: "Inquiry source is typed in three different ways", missing: "Marketing and recruiting spend are never tied to the families they brought in" },
+];
+
 
 const SERVE = ["Christian K–12 and classical schools", "Christian colleges and universities", "Seminaries", "Churches and ministry offices"];
 const TINTS = [[BRAND.blush, "#A8341F"], ["#EDE6F6", "#4A2F7A"], ["#FFF0CC", "#7A5200"], [BRAND.blush, "#A8341F"], ["#EDE6F6", "#4A2F7A"]];
@@ -93,13 +103,36 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="deliver" className="section cols3" style={{ paddingTop: 56, paddingBottom: 40 }}>
-        {DELIVERABLES.map(d => (
-          <div key={d.title} style={{ background: d.bg, color: d.fg, borderRadius: "120px 120px 24px 24px", padding: "64px 28px 30px", textAlign: "center", display: "flex", flexDirection: "column", gap: 10 }}>
-            <h3 style={{ margin: 0, fontSize: 22, fontWeight: 800 }}>{d.title}</h3>
-            <p style={{ margin: 0, color: d.sub }}>{d.body}</p>
+      <section id="missing" className="section" style={{ paddingTop: 72 }}>
+        <h2 style={{ fontSize: "clamp(30px, 4vw, 44px)", fontWeight: 800, margin: "0 0 8px", textAlign: "center" }}>Broken, or <Accent>missing?</Accent></h2>
+        <p className="muted" style={{ textAlign: "center", maxWidth: 680, margin: "0 auto 32px", fontSize: 18 }}>
+          Sometimes the process works fine and the constraint comes from something the school has never started doing.
+          The diagnosis looks for both: what to fix, and what to begin.
+        </p>
+        <div className="tex-chalk" style={{ borderRadius: 28, padding: 20, boxShadow: "inset 0 0 0 8px #6B4226, inset 0 0 60px rgba(0,0,0,.45)" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 14, padding: 12 }}>
+            {MISSING.map(m => (
+              <div key={m.c} style={{ background: "rgba(255,248,243,.96)", borderRadius: 18, padding: 20, display: "flex", flexDirection: "column", gap: 10 }}>
+                <h3 style={{ margin: 0, fontSize: 18, fontWeight: 800 }}>{m.c}</h3>
+                <p style={{ margin: 0, fontSize: 14, color: BRAND.ink2 }}><b style={{ color: BRAND.coral }}>Fix what's broken:</b> {m.broken}</p>
+                <p style={{ margin: 0, fontSize: 14, color: BRAND.ink2 }}><b style={{ color: BRAND.violet }}>Start what's missing:</b> {m.missing}</p>
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
+      </section>
+
+      <section id="deliver" className="section" style={{ paddingTop: 72, paddingBottom: 40 }}>
+        <h2 style={{ fontSize: "clamp(30px, 4vw, 44px)", fontWeight: 800, margin: "0 0 28px", textAlign: "center" }}>From diagnosis to <Accent>remedy.</Accent></h2>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))", gap: 18 }}>
+          {DELIVERABLES.map((d, i) => (
+            <div key={d.title} style={{ background: d.bg, color: d.fg, borderRadius: "120px 120px 24px 24px", padding: "56px 24px 28px", textAlign: "center", display: "flex", flexDirection: "column", gap: 10 }}>
+              <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: ".1em", textTransform: "uppercase", color: d.sub, opacity: .85 }}>{i + 1} · {d.k}</div>
+              <h3 style={{ margin: 0, fontSize: 21, fontWeight: 800 }}>{d.title}</h3>
+              <p style={{ margin: 0, color: d.sub }}>{d.body}</p>
+            </div>
+          ))}
+        </div>
       </section>
 
       <section id="who" className="section" style={{ display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "center", paddingBottom: 48 }}>

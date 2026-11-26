@@ -8,18 +8,21 @@ export const BRAND = {
 } as const;
 
 /** Lancet-window mark: four panes under a pointed-round arch (also reads as a document). */
+/** The shule mark: a brass school bell, mid-ring, in a deep-blue arch. Drawn in SVG so it stays crisp at any size. */
 export function Mark({ size = 40 }: { size?: number }) {
-  const w = Math.round(size * 0.78), r = w / 2, pad = Math.max(3, Math.round(size / 11)), g = Math.max(2, Math.round(size / 20));
-  const pane = (bg: string, radius = "0") => <div style={{ background: bg, borderRadius: radius }} />;
   return (
-    <div aria-hidden="true" style={{
-      width: w, height: size, borderRadius: `${r}px ${r}px ${size / 7}px ${size / 7}px`, background: BRAND.deep,
-      padding: pad, boxSizing: "border-box", display: "grid", gridTemplateColumns: "1fr 1fr", gap: g, flex: "none",
-    }}>
-      {pane(BRAND.coral, `${r}px 0 0 0`)}{pane(BRAND.butter, `0 ${r}px 0 0`)}
-      {pane(BRAND.violet)}{pane(BRAND.blush)}
-      {pane(BRAND.butter)}{pane(BRAND.coral)}
-    </div>
+    <svg aria-hidden="true" width={Math.round(size * 0.84)} height={size} viewBox="0 0 40 48" style={{ flex: "none", display: "block" }}>
+      <path d="M0 20 A20 20 0 0 1 40 20 V42 A6 6 0 0 1 34 48 H6 A6 6 0 0 1 0 42 Z" fill={BRAND.deep} />
+      <g transform="rotate(-16 20 27)">
+        <rect x="17.6" y="5.5" width="4.8" height="11" rx="2.4" fill={BRAND.coral} />
+        <rect x="15.8" y="15.6" width="8.4" height="3" rx="1.2" fill="#C8922F" />
+        <path d="M20 18 C13.6 18 13.2 23.8 12.7 28.4 C12.3 32.4 10.4 34.6 8 36.3 H32 C29.6 34.6 27.7 32.4 27.3 28.4 C26.8 23.8 26.4 18 20 18 Z" fill="#E7B24E" />
+        <path d="M16.2 21.5 C15.2 24 15 28 14.6 31" stroke="#FFF1C9" strokeWidth="1.6" strokeLinecap="round" fill="none" opacity=".75" />
+        <rect x="6.6" y="35.2" width="26.8" height="3.4" rx="1.7" fill="#C8922F" />
+        <circle cx="22.5" cy="41.2" r="2.6" fill={BRAND.butter} />
+      </g>
+      <path d="M31.5 10.5 q3 2.2 3.2 5.6 M34.2 7.6 q4.4 3.4 4.4 8.6" stroke={BRAND.butter} strokeWidth="1.5" strokeLinecap="round" fill="none" opacity=".9" />
+    </svg>
   );
 }
 
