@@ -59,3 +59,10 @@ table.t { width: 100%; border-collapse: collapse; font-size: 14px; } table.t td,
   .cols3, .hero { grid-template-columns: 1fr; }
   .nav-links a:not(.btn) { display: none; }
 }
+
+/* brand textures (generated in brand-assets/; see BRAND.md). url()s are relative so Next bundles them with the right base path */
+.tex-glass { background-image: url("./textures/stained-glass-tile.webp"); background-repeat: repeat; background-size: 360px; }
+.tex-wood { background-image: url("./textures/wood-planks-tile.webp"); background-repeat: repeat; background-size: 480px; }
+.beam-rule { height: 30px; background: url("./textures/wood-beam-border.webp") repeat-x center / auto 100%; border-radius: 4px; box-shadow: 0 3px 8px rgba(27, 43, 91, .18); }
+.glass-panel { position: relative; overflow: hidden; border: 6px solid var(--deep); }
+.glass-panel > * { position: relative; }

@@ -37,3 +37,13 @@ Text on coral or violet is white (both pass 4.5:1). Text on butter, blush or war
 - **Optional verse lines** (KJV, public domain), for footers and reports:
   - "Let all things be done decently and in order." 1 Cor. 14:40
   - "He that is faithful in that which is least is faithful also in much." Luke 16:10
+
+## Textures and accents
+
+Files and sources: `brand-assets/` (PBR maps, `shule_assets.blend`, generator scripts). Preview: `/brand-assets` on the site.
+
+- `.tex-glass` (stained glass, tiles seamlessly): frames, card headers, thin dividers. Never put text directly on it; text sits on a warm-white panel.
+- `.tex-wood` (oak planks, tiles seamlessly): warm panels such as quotes, testimonials or footers.
+- `.beam-rule` (timber beam with iron pegs): a divider or shelf line.
+- `lancet-window.webp`: the rendered window on a transparent background, for heroes and empty states.
+- Use one texture per screen, and keep the stained-glass band (`<StainedGlass />`) as the main motif.
