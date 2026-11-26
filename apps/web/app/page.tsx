@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Accent, BRAND, Logo, VERSE } from "@/components/brand";
 import { CONSTRAINTS } from "@/lib/constraints";
+import { DELIVERABLE_ART } from "@/components/DeliverableArt";
 import bellImg from "./textures/school-bell.webp";
 
 const STEPS = [
@@ -125,13 +126,14 @@ export default function Home() {
       <section id="deliver" className="section" style={{ paddingTop: 72, paddingBottom: 40 }}>
         <h2 style={{ fontSize: "clamp(30px, 4vw, 44px)", fontWeight: 800, margin: "0 0 28px", textAlign: "center" }}>From diagnosis to <Accent>remedy.</Accent></h2>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))", gap: 18 }}>
-          {DELIVERABLES.map((d, i) => (
-            <div key={d.title} style={{ background: d.bg, color: d.fg, borderRadius: "120px 120px 24px 24px", padding: "56px 24px 28px", textAlign: "center", display: "flex", flexDirection: "column", gap: 10 }}>
+          {DELIVERABLES.map((d, i) => { const Art = DELIVERABLE_ART[i]; return (
+            <div key={d.title} style={{ background: d.bg, color: d.fg, borderRadius: "120px 120px 24px 24px", padding: "48px 20px 28px", textAlign: "center", display: "flex", flexDirection: "column", gap: 10 }}>
+              <div style={{ borderRadius: 16, overflow: "hidden", boxShadow: "0 8px 20px rgba(27,43,91,.14)", marginBottom: 6 }}><Art /></div>
               <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: ".1em", textTransform: "uppercase", color: d.sub, opacity: .85 }}>{i + 1} · {d.k}</div>
               <h3 style={{ margin: 0, fontSize: 21, fontWeight: 800 }}>{d.title}</h3>
               <p style={{ margin: 0, color: d.sub }}>{d.body}</p>
             </div>
-          ))}
+          ); })}
         </div>
       </section>
 

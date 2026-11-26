@@ -68,3 +68,32 @@ table.t { width: 100%; border-collapse: collapse; font-size: 14px; } table.t td,
 .beam-rule { height: 30px; background: url("./textures/wood-beam-border.webp") repeat-x center / auto 100%; border-radius: 4px; box-shadow: 0 3px 8px rgba(27, 43, 91, .18); }
 .glass-panel { position: relative; overflow: hidden; border: 6px solid var(--deep); }
 .glass-panel > * { position: relative; }
+
+/* Deliverable illustrations (components/DeliverableArt.tsx): one 6s loop; --d shifts each element's phase. */
+.da * { transform-box: fill-box; }
+.da-write, .da-grow, .da-pop, .da-draw, .da-type, .da-lens, .da-before, .da-after, .da-progress {
+  animation-duration: 6s; animation-iteration-count: infinite; animation-fill-mode: both; animation-delay: var(--d, 0s);
+}
+.da-write { transform-origin: left center; animation-name: da-write; animation-timing-function: ease-out; }
+.da-grow { transform-origin: center bottom; animation-name: da-grow; animation-timing-function: cubic-bezier(.2,.8,.2,1); }
+.da-pop { transform-origin: center; animation-name: da-pop; }
+.da-draw { stroke-dasharray: 1; animation-name: da-draw; animation-timing-function: ease-in-out; }
+.da-type { transform-origin: left center; animation-name: da-type; animation-timing-function: steps(28, end); animation-delay: 2s; }
+.da-lens { animation-name: da-lens; animation-timing-function: ease-in-out; animation-delay: 1.4s; }
+.da-before { animation-name: da-before; }
+.da-after { animation-name: da-after; }
+.da-progress { transform-origin: left center; animation-name: da-progress; animation-timing-function: linear; }
+@keyframes da-write { 0% { transform: scaleX(0); opacity: 0 } 8% { transform: scaleX(1); opacity: 1 } 80% { opacity: 1 } 92%, 100% { transform: scaleX(1); opacity: 0 } }
+@keyframes da-grow { 0% { transform: scaleY(0) } 12% { transform: scaleY(1) } 82% { opacity: 1 } 94%, 100% { transform: scaleY(1); opacity: 0 } }
+@keyframes da-pop { 0% { transform: scale(.4); opacity: 0 } 5% { transform: scale(1.08); opacity: 1 } 8% { transform: scale(1) } 80% { opacity: 1 } 92%, 100% { transform: scale(1); opacity: 0 } }
+@keyframes da-draw { 0% { stroke-dashoffset: 1 } 15% { stroke-dashoffset: 0 } 80% { stroke-dashoffset: 0; opacity: 1 } 92%, 100% { stroke-dashoffset: 0; opacity: 0 } }
+@keyframes da-type { 0% { transform: scaleX(0) } 30% { transform: scaleX(1) } 85% { transform: scaleX(1); opacity: 1 } 95%, 100% { transform: scaleX(1); opacity: 0 } }
+@keyframes da-lens { 0% { transform: translate(185px, 95px); opacity: 0 } 6% { opacity: 1 } 30% { transform: translate(120px, 70px) } 45%, 78% { transform: translate(30px, 48px); opacity: 1 } 90%, 100% { transform: translate(30px, 48px); opacity: 0 } }
+@keyframes da-before { 0%, 42% { opacity: 1 } 50%, 96% { opacity: 0 } 100% { opacity: 1 } }
+@keyframes da-after { 0%, 42% { opacity: 0 } 50%, 92% { opacity: 1 } 100% { opacity: 0 } }
+@keyframes da-progress { 0% { transform: scaleX(0) } 100% { transform: scaleX(1) } }
+@media (prefers-reduced-motion: reduce) {
+  .da-write, .da-grow, .da-pop, .da-draw, .da-type, .da-lens, .da-progress { animation: none; }
+  .da-draw { stroke-dashoffset: 0; } .da-lens { transform: translate(30px, 48px); }
+  .da-before { animation: none; opacity: 0; } .da-after { animation: none; opacity: 1; } .da-progress { transform: scaleX(.6); }
+}
