@@ -10,12 +10,12 @@ TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 
 cp -r "$ROOT/apps/web/." "$TMP/web"
-rm -rf "$TMP/web/.next" "$TMP/web/app/api" "$TMP/web/app/room" "$TMP/web/app/portal" "$TMP/web/app/agent"
+rm -rf "$TMP/web/.next" "$TMP/web/node_modules" "$TMP/web/app/api" "$TMP/web/app/room" "$TMP/web/app/portal" "$TMP/web/app/agent"
 # reuse the workspace's installed packages
-ln -s "$ROOT/node_modules" "$TMP/web/node_modules" 2>/dev/null || true
+ln -s "$ROOT/node_modules" "$TMP/web/node_modules"
 mkdir -p "$TMP/packages" && ln -s "$ROOT/packages/shared" "$TMP/packages/shared"
 
-(cd "$TMP/web" && PAGES_BASE_PATH="$BASE" NEXT_PUBLIC_DEMO=1 NEXT_TELEMETRY_DISABLED=1 npx next build)
+(cd "$TMP/web" && PAGES_BASE_PATH="$BASE" NEXT_PUBLIC_DEMO=1 NEXT_TELEMETRY_DISABLED=1 "$ROOT/node_modules/.bin/next" build)
 rm -rf "$OUT" && cp -r "$TMP/web/out" "$OUT"
 touch "$OUT/.nojekyll"      # keep the _next/ folder (Jekyll would hide it)
 echo "built $OUT"

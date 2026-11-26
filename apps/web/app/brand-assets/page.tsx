@@ -1,12 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Accent, BRAND, Logo } from "@/components/brand";
+import bellImg from "../textures/school-bell.webp";
 import windowImg from "../textures/lancet-window.webp";
 
 export const metadata = { title: "Brand assets · shule" };
 
 const SAMPLES: { name: string; cls: string; use: string; file: string }[] = [
   { name: "Stained glass", cls: "tex-glass", use: "Hero backdrops, card headers, section dividers (crop it small)", file: "stained-glass-tile.webp · tiles seamlessly" },
+  { name: "Chalkboard slate", cls: "tex-chalk", use: "Hero backdrops and lesson-style panels; chalk-hand labels only on this surface", file: "chalkboard-tile.webp · tiles seamlessly" },
   { name: "Wood planks", cls: "tex-wood", use: "Warm panels, footers, testimonial or quote blocks", file: "wood-planks-tile.webp · tiles seamlessly" },
 ];
 
@@ -28,12 +30,20 @@ export default function BrandAssets() {
       </header>
 
       <section className="section" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 24, alignItems: "start" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
         <figure className="card" style={{ margin: 0, display: "grid", placeItems: "center", background: BRAND.warm }}>
-          <Image src={windowImg} alt="Timber-framed lancet window with shule stained glass" style={{ width: "min(100%, 320px)", height: "auto" }} priority />
+          <Image src={bellImg} alt="Brass school hand bell with a turned walnut handle" style={{ width: "min(100%, 340px)", height: "auto" }} priority />
           <figcaption className="muted" style={{ fontSize: 14, textAlign: "center", marginTop: 12 }}>
-            <b style={{ color: BRAND.deep }}>Lancet window</b> · transparent background · lancet-window.webp (and -sm)
+            <b style={{ color: BRAND.deep }}>School bell</b> · the central motif · transparent background · school-bell.webp (and -sm)
           </figcaption>
         </figure>
+        <figure className="card" style={{ margin: 0, display: "grid", placeItems: "center", background: BRAND.warm }}>
+          <Image src={windowImg} alt="Timber-framed lancet window with shule stained glass" style={{ width: "min(100%, 240px)", height: "auto" }} />
+          <figcaption className="muted" style={{ fontSize: 14, textAlign: "center", marginTop: 12 }}>
+            <b style={{ color: BRAND.deep }}>Lancet window</b> · transparent background · lancet-window.webp (and -sm) · now a secondary accent
+          </figcaption>
+        </figure>
+        </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
           {SAMPLES.map(s => (
             <figure key={s.cls} className="card" style={{ margin: 0, padding: 0, overflow: "hidden" }}>

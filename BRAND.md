@@ -45,5 +45,7 @@ Files and sources: `brand-assets/` (PBR maps, `shule_assets.blend`, generator sc
 - `.tex-glass` (stained glass, tiles seamlessly): frames, card headers, thin dividers. Never put text directly on it; text sits on a warm-white panel.
 - `.tex-wood` (oak planks, tiles seamlessly): warm panels such as quotes, testimonials or footers.
 - `.beam-rule` (timber beam with iron pegs): a divider or shelf line.
-- `lancet-window.webp`: the rendered window on a transparent background, for heroes and empty states.
-- Use one texture per screen, and keep the stained-glass band (`<StainedGlass />`) as the main motif.
+- `.tex-chalk` (slate chalkboard, tiles seamlessly): hero backdrops and lesson-style panels. Chalk-hand lettering only on this surface.
+- `school-bell.webp`: the brass hand bell, mid-ring, on a transparent background. **The central motif**: it is the landing hero (over a chalkboard arch) and it "rings" when a constraint is found.
+- `lancet-window.webp` and the stained-glass band: secondary accents now (chapel moments, verses), no longer the hero.
+- Use one texture per screen.

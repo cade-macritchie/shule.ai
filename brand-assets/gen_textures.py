@@ -4,6 +4,7 @@ Outputs PBR map sets under out/<material>/:  basecolor, normal (OpenGL, +Y up), 
   stained_glass      2048x2048  angular leaded panes in the brand palette (opacity: glass 1, lead 0)
   wood_planks        2048x2048  warm honey-walnut planks, grain along X
   wood_beam          2048x320   one chamfered timber beam with iron pegs, tiles horizontally (a border)
+  chalkboard         2048x2048  used slate: grain, eraser sweeps, ghost writing, chalk dust
 
 Usage: python gen_textures.py [--size 2048] [--seed 7] [--out out]
 """
@@ -228,6 +229,63 @@ def wood_beam(width: int, height_px: int, rng: np.random.Generator, peg_every: i
     return {"basecolor": np.clip(col, 0, 1), "normal": normal_from_height(hgt, 5.0), "roughness": rough, "height": np.clip(hgt, 0, 1)}
 
 
+# ---------------------------------------------------------------- chalkboard
+SLATE = hex_rgb("#1E2A3D")      # blue-black slate (brand-adjacent navy)
+CHALK = hex_rgb("#EEEBE3")
+
+
+def chalkboard(size: int, rng: np.random.Generator, swipes: int = 30, ghost_lines: int = 7):
+    """A used slate chalkboard that tiles: fine slate grain, long side-to-side eraser swipes that leave
+    a streaky chalk haze, faint half-erased lesson text, and chalk dust specks."""
+    import cv2
+    from PIL import ImageDraw, ImageFont
+    S = size
+    yy, xx = np.mgrid[0:S, 0:S].astype(np.float32) / S
+    grain_f = periodic_noise(S, S, rng, 0.9)
+    low = fbm(S, S, rng, S / 3, 3)
+    streak = periodic_noise(S, S, rng, 1.8, (30, 1))        # felt-pad streaks, long along X
+    haze = np.zeros((S, S), np.float32)
+
+    # eraser swipes: wide horizontal bands with a slow wobble; ends fade (x wraps, so it tiles)
+    for _ in range(swipes):
+        y0, x0 = rng.random(), rng.random()
+        L = rng.uniform(0.25, 0.8); w = rng.uniform(0.035, 0.08)
+        amp, ph, k = rng.uniform(0, 0.04), rng.uniform(0, 2 * np.pi), int(rng.integers(1, 3))
+        yc = y0 + amp * np.sin(2 * np.pi * k * xx + ph)       # integer k keeps the wobble periodic
+        dy = (yy - yc + 0.5) % 1 - 0.5
+        t = ((xx - x0) % 1) / L
+        ends = np.clip(np.sin(np.pi * np.clip(t, 0, 1)) * 1.6, 0, 1) * (t < 1)
+        band = np.clip(1 - np.abs(dy) / w, 0, 1) ** 0.8
+        haze += band * ends * rng.uniform(0.05, 0.13)
+
+    # ghost lesson: faint text written in rows, then mostly wiped (rendered on a 3x3 canvas so it wraps)
+    big = Image.new("L", (S * 3, S * 3), 0)
+    d = ImageDraw.Draw(big)
+    lines = ["Amo, amas, amat, amamus, amatis, amant", "a² + b² = c²", "In principio erat Verbum",
+             "Thesis → Antithesis → Synthesis", "¾ ÷ ½ = 1½", "Grammar · Logic · Rhetoric",
+             "Psalm 119:105", "x = (−b ± √(b²−4ac)) / 2a", "Veritas"]
+    font_path = "/usr/share/fonts/truetype/dejavu/DejaVuSerif-Italic.ttf"
+    for i in range(ghost_lines):
+        fs = int(S * rng.uniform(0.035, 0.055))
+        f = ImageFont.truetype(font_path, fs)
+        x = S + rng.uniform(0, 0.6) * S
+        y = S + (i + rng.uniform(0.1, 0.6)) * S / ghost_lines
+        d.text((x, y), lines[int(rng.integers(len(lines)))], fill=int(rng.uniform(110, 200)), font=f)
+    arr = np.asarray(big, np.float32) / 255
+    ghost = sum(arr[r * S:(r + 1) * S, c * S:(c + 1) * S] for r in range(3) for c in range(3))
+    ghost = cv2.GaussianBlur(np.clip(ghost, 0, 1), (0, 0), S / 900 + 0.8)
+    rub = np.clip(0.5 * periodic_noise(S, S, rng, S / 50, (10, 1)) + 0.2, 0, 1)   # wiped unevenly along X
+    ghost *= rub
+
+    dust = np.clip(periodic_noise(S, S, rng, 0.7) - 2.9, 0, 1) * 2.0
+    haze = haze * np.clip(0.68 + 0.32 * streak, 0.2, 1.3)
+    haze = np.clip(haze + ghost * 0.16 + dust * 0.35 + 0.025 * (low * 0.5 + 0.5), 0, 0.5)
+    slate = SLATE * (1 + 0.05 * low + 0.035 * grain_f)[..., None]
+    col = slate * (1 - haze[..., None]) + CHALK * haze[..., None]
+    height = 0.5 + 0.03 * grain_f + 0.05 * haze
+    rough = np.clip(0.8 + 0.12 * haze + 0.03 * grain_f, 0, 1)
+    return {"basecolor": np.clip(col, 0, 1), "normal": normal_from_height(height, 2.5), "roughness": rough, "height": np.clip(height, 0, 1)}
+
 def bake_web(maps: dict, backlit: bool = False) -> np.ndarray:
     """Flat image for websites (no 3D lighting there): base color shaded by the normal map from a soft
     top-left light, plus a little specular on smooth areas. Backlit = light passing through glass."""
@@ -262,6 +320,7 @@ def main():
     write_set("stained_glass", stained_glass(a.size, np.random.default_rng(a.seed)), out)
     write_set("wood_planks", wood_planks(a.size, np.random.default_rng(a.seed + 1)), out)
     write_set("wood_beam", wood_beam(a.size, max(160, a.size * 5 // 32), np.random.default_rng(a.seed + 2), peg_every=a.size // 4), out)
+    write_set("chalkboard", chalkboard(a.size, np.random.default_rng(a.seed + 3)), out)
 
 
 if __name__ == "__main__":

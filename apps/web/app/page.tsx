@@ -1,19 +1,23 @@
+import Image from "next/image";
 import Link from "next/link";
-import { Accent, BRAND, Logo, StainedGlass, VERSE } from "@/components/brand";
+import { Accent, BRAND, Logo, VERSE } from "@/components/brand";
+import { CONSTRAINTS } from "@/lib/constraints";
+import bellImg from "./textures/school-bell.webp";
 
 const STEPS = [
-  { n: 1, title: "Name the work", body: "Tell us the processes and the people who carry them. We handle invitations, booking and reminders.", bg: BRAND.blush, fg: "#A8341F" },
-  { n: 2, title: "Just talk", body: "A patient AI interviewer listens, asks good follow-ups, and lets you share your screen to show the real thing.", bg: "#EDE6F6", fg: "#4A2F7A" },
-  { n: 3, title: "Bring it into good order", body: "Docs, a prioritized audit, and a video for each big fix, ready in your team portal.", bg: "#FFF0CC", fg: "#7A5200" },
+  { n: 1, title: "Name your constraint", body: "Tell us what's holding the school back and who knows that work best. We handle invitations, booking and reminders.", bg: BRAND.blush, fg: "#A8341F" },
+  { n: 2, title: "Your people just talk", body: "A patient AI interviewer asks how the work really runs, where it waits and what goes wrong. Screen sharing welcome.", bg: "#EDE6F6", fg: "#4A2F7A" },
+  { n: 3, title: "Fix the right thing first", body: "Docs, a Lean Six Sigma audit ranked by impact on your constraint, and the numbers behind it.", bg: "#FFF0CC", fg: "#7A5200" },
 ];
 
 const DELIVERABLES = [
-  { title: "Docs your team will use", body: "An interactive process map with owners, systems and open questions, kept current as answers come in.", bg: BRAND.blush, fg: BRAND.deep, sub: BRAND.ink2 },
-  { title: "An audit that shows its work", body: "Lean Six Sigma made practical: wastes, root causes, risk scores and where to start, each backed by a quote from the interview.", bg: BRAND.butter, fg: BRAND.deep, sub: BRAND.deep },
-  { title: "Videos that teach the fix", body: "Short animated guides with the actual build steps, systems and owners for every major problem.", bg: BRAND.violet, fg: "#fff", sub: "#E4DAF5" },
+  { title: "Docs your team will use", body: "An interactive map of how the work really runs, with owners, systems and open questions, kept current as answers come in.", bg: BRAND.blush, fg: BRAND.deep, sub: BRAND.ink2 },
+  { title: "An audit aimed at your constraint", body: "Wastes, root causes and risk scores, every finding tied to the constraint it moves and backed by a quote from the interview.", bg: BRAND.butter, fg: BRAND.deep, sub: BRAND.deep },
+  { title: "Videos that teach the fix", body: "A free preview for each major problem, and full step-by-step guides when you're ready to build.", bg: BRAND.violet, fg: "#fff", sub: "#E4DAF5" },
 ];
 
 const SERVE = ["Christian K–12 and classical schools", "Christian colleges and universities", "Seminaries", "Churches and ministry offices"];
+const TINTS = [[BRAND.blush, "#A8341F"], ["#EDE6F6", "#4A2F7A"], ["#FFF0CC", "#7A5200"], [BRAND.blush, "#A8341F"], ["#EDE6F6", "#4A2F7A"]];
 
 export default function Home() {
   return (
@@ -21,48 +25,67 @@ export default function Home() {
       <nav className="section nav" style={{ paddingTop: 24, paddingBottom: 12 }}>
         <Logo />
         <div className="nav-links">
+          <a href="#constraints">Constraints</a>
           <Link href="/how-it-works">How it works</Link>
           <Link href="/how-it-works#pricing">Pricing</Link>
-          <a href="#who">Who we serve</a>
-          <Link className="btn" href="/start">Get started</Link>
+          <Link className="btn" href="/start">Start free</Link>
         </div>
       </nav>
 
-      <header className="section hero" style={{ paddingTop: 40, paddingBottom: 64 }}>
-        <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-          <span className="eyebrow" style={{ alignSelf: "flex-start" }}>For Christian schools, colleges, seminaries and ministries</span>
-          <h1 className="h-hero">Steward the work behind the <Accent>mission.</Accent></h1>
-          <p className="muted" style={{ margin: 0, fontSize: 20, maxWidth: 600 }}>
-            A 45-minute conversation with our AI interviewer becomes living docs, a Lean Six Sigma audit, and step-by-step
-            videos for the biggest fixes, so your people spend less time on busywork and more time on students.
-            Interviews, docs and the audit are free.
+      <header className="section hero" style={{ paddingTop: 32, paddingBottom: 56 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 22 }}>
+          <span className="eyebrow" style={{ alignSelf: "flex-start" }}>For Christian schools, colleges and seminaries</span>
+          <h1 className="h-hero">Find the constraint holding your <Accent>mission</Accent> back.</h1>
+          <p className="muted" style={{ margin: 0, fontSize: 20, maxWidth: 620 }}>
+            Every school is limited by something: too few students, thin margins, teaching roles you can't fill, an
+            experience bigger schools outspend you on, or not knowing what a student costs to win. One conversation
+            with the people who do the work shows where it's stuck and what to fix first. Free.
           </p>
           <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
-            <Link className="btn lg" href="/start">Start free</Link>
+            <Link className="btn lg" href="/start">Find my constraint</Link>
             <Link className="btn ghost lg" href="/how-it-works">How it works</Link>
           </div>
         </div>
-        <div className="arch" style={{ background: BRAND.deep, color: BRAND.warm, padding: "96px 28px 28px", display: "flex", flexDirection: "column", gap: 16 }}>
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10, textAlign: "center" }}>
-            <div style={{ width: 64, height: 64, borderRadius: "50%", background: BRAND.coral, boxShadow: "0 0 0 9px rgba(200,64,43,.25)" }} />
-            <div><div style={{ fontWeight: 800, fontSize: 18 }}>AI interviewer</div><div style={{ fontSize: 14, color: "#C3CBE6" }}>Listening…</div></div>
-          </div>
-          <div style={{ background: "rgba(255,248,243,.08)", borderRadius: 18, padding: 16 }}>
-            <b style={{ color: BRAND.butter }}>Interviewer:</b> After a family enrolls, what's the very first thing your office does?
-          </div>
-          <div style={{ background: "rgba(255,248,243,.08)", borderRadius: 18, padding: 16 }}>
-            <b style={{ color: "#C3CBE6" }}>You:</b> We send the welcome packet, but first someone has to check the tuition agreement came back.
+        <div style={{ position: "relative", display: "grid", placeItems: "center" }}>
+          <div aria-hidden className="hero-board tex-chalk" />
+          <Image src={bellImg} alt="A brass school hand bell, mid-ring" priority sizes="(max-width: 900px) 70vw, 440px"
+            style={{ position: "relative", width: "min(100%, 440px)", height: "auto", filter: "drop-shadow(0 30px 36px rgba(10,14,30,.35))" }} />
+          <div className="card" style={{ position: "absolute", left: 0, bottom: 4, maxWidth: 260, padding: 16, borderRadius: 18 }}>
+            <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: ".08em", textTransform: "uppercase", color: BRAND.violet }}>Constraint found</div>
+            <div style={{ fontWeight: 800, margin: "4px 0" }}>Deposit → registration handoff</div>
+            <div className="muted" style={{ fontSize: 14 }}>Admitted students wait 6–9 days for an ID. Fix first: a nightly automated handoff.</div>
           </div>
         </div>
       </header>
 
-      <div className="section"><StainedGlass /></div>
+      <div className="section"><div className="beam-rule" /></div>
 
-      <section id="how" className="section" style={{ paddingTop: 56 }}>
+      <section id="constraints" className="section" style={{ paddingTop: 64 }}>
+        <h2 style={{ fontSize: "clamp(32px, 4vw, 46px)", fontWeight: 800, margin: "0 0 8px", textAlign: "center" }}>Which constraint is <Accent>yours?</Accent></h2>
+        <p className="muted" style={{ textAlign: "center", maxWidth: 640, margin: "0 auto 36px", fontSize: 18 }}>
+          Lean Six Sigma starts with the constraint: improve anything else and nothing really changes.
+          Pick yours, and the interviews and audit aim straight at it.
+        </p>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))", gap: 18 }}>
+          {CONSTRAINTS.map((c, i) => (
+            <Link key={c.id} href={`/start?constraint=${c.id}`} className="card" style={{ textDecoration: "none", color: BRAND.deep, borderRadius: "120px 120px 22px 22px", padding: "54px 22px 22px", display: "flex", flexDirection: "column", gap: 10 }}>
+              <div style={{ width: 40, height: 40, borderRadius: "50%", alignSelf: "center", display: "grid", placeItems: "center", fontWeight: 800, background: TINTS[i][0], color: TINTS[i][1] }}>{i + 1}</div>
+              <h3 style={{ margin: 0, fontSize: 20, fontWeight: 800, textAlign: "center" }}>{c.title}</h3>
+              <p className="accent" style={{ margin: 0, fontSize: 19, color: BRAND.violet, textAlign: "center", lineHeight: 1.3 }}>“{c.symptom}”</p>
+              <p style={{ margin: 0, fontSize: 14, color: BRAND.ink2 }}><b style={{ color: BRAND.deep }}>We look at:</b> {c.lookAt}</p>
+              <p style={{ margin: 0, fontSize: 14, color: BRAND.ink2 }}><b style={{ color: BRAND.deep }}>You'll know:</b> {c.know}</p>
+              <span style={{ marginTop: "auto", fontWeight: 700, color: BRAND.coral, fontSize: 15 }}>Start here →</span>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section id="how" className="section" style={{ paddingTop: 64 }}>
+        <div className="beam-rule" style={{ marginBottom: 28 }} />
         <div className="card cols3" style={{ padding: 40, borderRadius: 28 }}>
           {STEPS.map(s => (
             <div key={s.n} style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              <div className="arch-sm" style={{ width: 48, height: 60, background: s.bg, color: s.fg, fontWeight: 800, fontSize: 20, display: "grid", placeItems: "center", borderRadius: "24px 24px 8px 8px" }}>{s.n}</div>
+              <div style={{ width: 48, height: 60, background: s.bg, color: s.fg, fontWeight: 800, fontSize: 20, display: "grid", placeItems: "center", borderRadius: "24px 24px 8px 8px" }}>{s.n}</div>
               <h3 style={{ margin: 0, fontSize: 22, fontWeight: 800 }}>{s.title}</h3>
               <p className="muted" style={{ margin: 0 }}>{s.body}</p>
             </div>
@@ -86,15 +109,17 @@ export default function Home() {
       <section className="section">
         <div style={{ background: BRAND.coral, color: "#fff", borderRadius: 28, padding: 44, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 24, flexWrap: "wrap" }}>
           <h2 style={{ margin: 0, fontSize: "clamp(28px, 3.5vw, 40px)", fontWeight: 800, maxWidth: 760 }}>
-            Start free. Your first interview could happen <Accent color="#fff">this week.</Accent>
+            Know your constraint, and the first fix, <Accent color="#fff">this month.</Accent>
           </h2>
-          <Link className="btn lg" href="/start" style={{ background: BRAND.warm, color: BRAND.deep }}>Start an engagement</Link>
+          <Link className="btn lg" href="/start" style={{ background: BRAND.warm, color: BRAND.deep }}>Start free</Link>
         </div>
       </section>
 
-      <footer className="section" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16, flexWrap: "wrap", padding: "36px 24px 48px", fontSize: 14 }}>
-        <span className="muted">© shule · Process interviews, docs and improvement for education and ministry</span>
-        <span className="accent" style={{ fontSize: 20, color: BRAND.violet }}>“{VERSE.text}” {VERSE.ref}</span>
+      <footer className="section" style={{ padding: "40px 24px 48px" }}>
+        <div className="tex-wood" style={{ borderRadius: 24, padding: 22, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
+          <span style={{ background: "rgba(255,248,243,.95)", borderRadius: 14, padding: "10px 16px", fontSize: 14, color: BRAND.ink2 }}>© shule · Process interviews, docs and improvement for education and ministry</span>
+          <span className="accent" style={{ background: "rgba(255,248,243,.95)", borderRadius: 14, padding: "8px 16px", fontSize: 20, color: BRAND.violet }}>“{VERSE.text}” {VERSE.ref}</span>
+        </div>
       </footer>
     </main>
   );

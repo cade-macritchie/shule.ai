@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { db, enqueue, log } from "@/lib/db";
+import { CONSTRAINT_IDS } from "@/lib/constraints";
 
 export const runtime = "nodejs";
 
@@ -8,6 +9,7 @@ const Intake = z.object({
   company: z.string().min(2).max(120),
   contact_name: z.string().min(2),
   contact_email: z.string().email(),
+  constraints: z.array(z.enum(CONSTRAINT_IDS)).max(5).default([]),   // the business constraints the school named
   processes: z.string().min(10).max(4000),   // "what should we look at, and why"
   goals: z.string().max(2000).optional(),
   interviewees: z.array(z.object({ name: z.string().min(2), email: z.string().email(), role: z.string().optional() })).min(1).max(8),
