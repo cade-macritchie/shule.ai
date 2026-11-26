@@ -3,7 +3,7 @@ framed in timber, then render the window on a transparent background for the web
 
 Run with Blender's Python:   blender -b -P build_blend.py -- [--samples 96] [--res 1200]
 or with the bpy module:      python build_blend.py [--samples 96] [--res 1200]
-Textures are read from ./out/<material>/ (made by gen_textures.py) with relative paths.
+Textures are read from ./textures/<material>/ (or ./out/), made by gen_textures.py; the .blend keeps relative paths.
 """
 import argparse
 import math
@@ -19,11 +19,14 @@ ap = argparse.ArgumentParser()
 ap.add_argument("--samples", type=int, default=96)
 ap.add_argument("--res", type=int, default=1200)
 ap.add_argument("--out", default=os.path.join(HERE, "render"))
+ap.add_argument("--tex", default="textures" if os.path.isdir(os.path.join(HERE, "textures")) else "out",
+                help="folder (next to this script) holding <material>/ texture sets")
+ap.add_argument("--no-render", action="store_true", help="only build and save the .blend")
 args = ap.parse_args(argv)
 
 
 def tex_path(mat, kind):
-    return os.path.join(HERE, "out", mat, f"{mat}_{kind}.png")
+    return os.path.join(HERE, args.tex, mat, f"{mat}_{kind}.png")
 
 
 def reset():
@@ -231,5 +234,6 @@ bpy.ops.wm.save_as_mainfile(filepath=blend_path, relative_remap=True)
 bpy.ops.file.make_paths_relative()
 bpy.ops.wm.save_mainfile()
 scene.render.filepath = os.path.join(args.out, "lancet_window.png")
-bpy.ops.render.render(write_still=True)
+if not args.no_render:
+    bpy.ops.render.render(write_still=True)
 print("saved", blend_path, "and", scene.render.filepath)
