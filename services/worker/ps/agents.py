@@ -459,7 +459,8 @@ def storyboard(p: dict):
             raise ValueError(f"storyboard invalid: {r.stdout[-2000:]}")
         reply = ask(system, f"{content}\n\nYour storyboard failed validation:\n{r.stdout[-4000:]}\nReturn the corrected full <storyboard>.", max_tokens=12000)
     db().table("videos").update({"storyboard": sb, "status": "tts"}).eq("id", v["id"]).execute()
-    enqueue("render_video", {"video_id": v["id"]})
+    v2 = _one("videos", id=v["id"])
+    enqueue("render_video", {"video_id": v["id"], "mode": "full" if v2.get("paid") else "preview"})
 
 
 def srt_cues(scenes: list[dict], fps: int) -> list[tuple[float, float, str]]:
@@ -487,13 +488,65 @@ def _ts(sec: float, sep=","):
     return f"{h:02d}:{m:02d}:{s:02d}{sep}{ms:03d}"
 
 
+PREVIEW_KINDS = ("title", "current_state", "waste", "fishbone", "metric")   # mirrors packages/shared PREVIEW_KINDS
+_cents = int(os.environ.get("NEXT_PUBLIC_VIDEO_PRICE_CENTS") or 0)
+VIDEO_PRICE = (f"${_cents / 100:.0f}" if _cents % 100 == 0 else f"${_cents / 100:.2f}") if _cents else ""
+
+
+def preview_scenes(sb: dict, price: str = "") -> list[dict]:
+    """Free preview = the problem (leading title/current state/waste/fishbone/metric scenes) + a locked end card
+    that names what the full guide covers, with the details blurred."""
+    shown: list[dict] = []
+    for sc in sb["scenes"]:
+        if sc["kind"] not in PREVIEW_KINDS:
+            break
+        shown.append(sc)
+    rest = sb["scenes"][len(shown):]
+    items: list[dict] = []
+    n_steps = 0
+    for sc in rest:
+        k, d = sc["kind"], sc.get("data", {})
+        if k == "future_state":
+            gone = sum(1 for l in d.get("lanes", []) for st in l["steps"] if st.get("removed"))
+            auto = sum(1 for l in d.get("lanes", []) for st in l["steps"] if st.get("automated"))
+            items.append({"label": "The future state", "detail": f"{gone} steps removed, {auto} automated"})
+        elif k == "implementation":
+            n_steps += len(d.get("steps", []))
+            items += [{"label": st["title"], "detail": st.get("detail", "")} for st in d.get("steps", [])]
+        elif k == "architecture":
+            items.append({"label": "How the systems connect", "detail": " → ".join(n["label"] for n in d.get("nodes", []))})
+        elif k == "roadmap":
+            items.append({"label": "DMAIC roadmap", "detail": ", ".join(f"{ph['phase']} {ph['weeks']}" for ph in d.get("phases", []))})
+        elif k == "control":
+            items.append({"label": "Control plan", "detail": ", ".join(r["metric"] for r in d.get("rows", []))})
+    if len(items) > 6:   # keep the first build steps but always show the closing sections
+        tail = [i for i in items if i["label"] in ("DMAIC roadmap", "Control plan")]
+        items = [i for i in items if i not in tail][: 6 - len(tail)] + tail
+    steps_txt = f"{n_steps} build steps, " if n_steps else ""
+    locked = {
+        "kind": "locked",
+        "narration": (f"That's the problem, and why it happens. The full guide walks your team through the fix: "
+                      f"{steps_txt}the systems involved, a roadmap, and a control plan so the gains stick. "
+                      "Unlock it in your portal to see every step."),
+        "data": {"headline": "See the full fix", "items": items, "cta": "Unlock in your portal", "price": price or None},
+    }
+    return shown + [locked]
+
+
 def render_video(p: dict):
+    """mode=preview: free problem-only cut + locked card (always allowed).
+    mode=full: the whole guide, only after payment (videos.paid)."""
     v = _one("videos", id=p["video_id"])
+    mode = p.get("mode", "full")
+    if mode == "full" and not v.get("paid"):
+        log(v["engagement_id"], "render_refused_unpaid", v["id"])
+        return
     sb, fps = v["storyboard"], 30
+    src_scenes = preview_scenes(sb, VIDEO_PRICE) if mode == "preview" else sb["scenes"]
     work = Path(tempfile.mkdtemp(prefix="ps-rv-"))
     audio = work / "audio"; audio.mkdir()
     scenes = []
-    for i, s in enumerate(sb["scenes"]):
+    for i, s in enumerate(src_scenes):
         name = f"scene{i:02d}.mp3"
         if tts(s["narration"], audio / name):
             secs = media.probe(audio / name)["duration"]
@@ -505,12 +558,13 @@ def render_video(p: dict):
     (work / "props.json").write_text(json.dumps(props))
 
     db().table("videos").update({"status": "rendering"}).eq("id", v["id"]).execute()
-    out = work / "guide.mp4"
+    stem = "preview" if mode == "preview" else "guide"
+    out = work / f"{stem}.mp4"
     _node("render.mjs", str(work / "props.json"), str(out), "--audio-dir", str(audio))
 
     cues = srt_cues(scenes, fps)
-    (work / "guide.srt").write_text("\n".join(f"{i}\n{_ts(a)} --> {_ts(b)}\n{t}\n" for i, (a, b, t) in enumerate(cues, 1)))
-    (work / "guide.vtt").write_text("WEBVTT\n\n" + "\n".join(f"{_ts(a, '.')} --> {_ts(b, '.')}\n{t}\n" for a, b, t in cues))
+    (work / f"{stem}.srt").write_text("\n".join(f"{i}\n{_ts(a)} --> {_ts(b)}\n{t}\n" for i, (a, b, t) in enumerate(cues, 1)))
+    (work / f"{stem}.vtt").write_text("WEBVTT\n\n" + "\n".join(f"{_ts(a, '.')} --> {_ts(b, '.')}\n{t}\n" for a, b, t in cues))
 
     db().table("videos").update({"status": "checking"}).eq("id", v["id"]).execute()
     leaks = check_video(out)
@@ -518,13 +572,19 @@ def render_video(p: dict):
         log(v["engagement_id"], "video_pii_warning", v["id"], {"leaks": leaks[:20]})
 
     key = f"{v['engagement_id']}/{v['id']}"
-    upload("videos", f"{key}/guide.mp4", out, "video/mp4")
-    upload("videos", f"{key}/guide.srt", work / "guide.srt", "application/x-subrip")
-    upload("videos", f"{key}/guide.vtt", work / "guide.vtt", "text/vtt")
-    db().table("videos").update({"status": "ready", "mp4_path": f"{key}/guide.mp4", "srt_path": f"{key}/guide.srt",
-                                 "duration_s": sum(s["durationInFrames"] for s in scenes) / fps}).eq("id", v["id"]).execute()
+    upload("videos", f"{key}/{stem}.mp4", out, "video/mp4")
+    upload("videos", f"{key}/{stem}.srt", work / f"{stem}.srt", "application/x-subrip")
+    upload("videos", f"{key}/{stem}.vtt", work / f"{stem}.vtt", "text/vtt")
     eng = _one("engagements", id=v["engagement_id"])
-    _notify_client(eng, f"Video guide ready: {v['title']}", "A new implementation video is in your portal.")
+    duration = sum(s["durationInFrames"] for s in scenes) / fps
+    if mode == "preview":
+        db().table("videos").update({"status": "preview_ready", "preview_path": f"{key}/preview.mp4",
+                                     "preview_vtt_path": f"{key}/preview.vtt"}).eq("id", v["id"]).execute()
+        _notify_client(eng, f"Free preview: {v['title']}", "A free preview of a new implementation guide is in your portal.")
+    else:
+        db().table("videos").update({"status": "ready", "mp4_path": f"{key}/guide.mp4", "srt_path": f"{key}/guide.srt",
+                                     "duration_s": duration}).eq("id", v["id"]).execute()
+        _notify_client(eng, f"Your video guide is ready: {v['title']}", "The full implementation guide is unlocked in your portal.")
 
 
 def check_video(path: Path) -> list[dict]:

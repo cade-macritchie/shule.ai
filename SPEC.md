@@ -174,6 +174,14 @@ Rules: never invent numbers (estimates are labelled `estimated`, with the basis 
 3. **Render**: `node packages/video/render.mjs props.json out.mp4` (Remotion `renderMedia`, h264, CRF 20, 1920×1080, 30 fps). The audio is placed per scene with `<Audio>` inside each `<Sequence>`.
 4. **Check**: reuse `auto_blur.py --check` on the output (screenshots in scenes are already blurred, but this confirms it), then upload to Storage and mark `videos.status = ready`.
 
+## 5a. Free preview + paywalled full guide
+
+- After an audit, each major finding (per `video_policy`) gets a storyboard and a **free preview** render: the leading problem scenes (`title`, `current_state`, `waste`, `fishbone`, `metric`) plus a render-only **locked** end card. The card lists what the full guide covers (future state, build-step titles, roadmap, control plan), shows details only as placeholder bars, and gives the price (`preview_scenes()` in `ps/agents.py`).
+- Portal → "Unlock the full guide" → `op: checkout` → a Stripe Checkout Session (price from `NEXT_PUBLIC_VIDEO_PRICE_CENTS`, `metadata.video_id`).
+- `POST /api/webhooks/stripe` (signature checked) on `checkout.session.completed` with `payment_status = paid` → `videos.paid = true` → `render_video {mode: full}`. The worker refuses a full render for an unpaid video.
+- Access: clients can read `preview.*` files and frames from storage directly (migration 0004). Full guides are only served by `op: video_url`, which checks `paid` and returns 1-hour signed URLs.
+- Statuses: `queued → storyboard → rendering → preview_ready → paid → rendering → ready`.
+
 ## 6. Sanitizing and consent (carried over)
 
 - The draft prompt's sanitizing rules stay unchanged (secrets → where they live; non-staff personal data → removed/truncated; `:::sensitive` blocks).

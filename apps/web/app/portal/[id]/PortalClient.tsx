@@ -50,6 +50,23 @@ export default function PortalClient({ engagementId, supabaseUrl, anonKey }: { e
   }
   useEffect(() => { if (session) load(); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [session]);
 
+  async function api(payload: object) {
+    const r = await fetch(`/api/portal/${engagementId}`, {
+      method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${session!.access_token}` }, body: JSON.stringify(payload),
+    });
+    return { ok: r.ok, status: r.status, body: await r.json().catch(() => ({})) as any };
+  }
+  async function unlock(videoId: string) {
+    setBusy("Opening secure checkout…");
+    const r = await api({ op: "checkout", video_id: videoId });
+    if (r.ok && r.body.url) window.location.href = r.body.url;
+    else setBusy(r.body.error ?? "Couldn't start checkout.");
+  }
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search);
+    if (q.get("paid")) { setTab("videos"); setBusy("Thank you! Your full guide is rendering now. We'll email you when it's ready (usually 10–20 minutes)."); }
+    if (q.get("canceled")) { setTab("videos"); setBusy("Checkout canceled. Your free preview is still here whenever you're ready."); }
+  }, []);
   async function act(payload: object, label: string) {
     setBusy(label);
     const r = await fetch(`/api/portal/${engagementId}`, {
@@ -127,7 +144,7 @@ export default function PortalClient({ engagementId, supabaseUrl, anonKey }: { e
             <div className="card">
               <h3 style={{ marginTop: 0 }}>Run again</h3>
               <label style={{ display: "flex", gap: 8, alignItems: "center", fontWeight: 400 }}>
-                <input type="checkbox" style={{ width: "auto" }} checked={withVideo} onChange={e => setWithVideo(e.target.checked)} /> Also order a video guide ({VIDEO_PRICE})
+                <input type="checkbox" style={{ width: "auto" }} checked={withVideo} onChange={e => setWithVideo(e.target.checked)} /> Also make free preview videos for major findings
               </label>
               <button className="btn" onClick={() => act({ op: "audit", generate_video: withVideo }, "Audit")}>Run full audit</button>
             </div>
@@ -139,7 +156,9 @@ export default function PortalClient({ engagementId, supabaseUrl, anonKey }: { e
             </tbody></table>}
             {finding && <FindingDetail f={finding} onBack={() => setPicked(null)}
               onOptimize={() => act({ op: "optimize", finding_id: finding.id, generate_video: withVideo }, "Optimization")}
-              onVideo={() => act({ op: "video", finding_ids: [finding.id] }, "Video")} />}
+              video={videos.find(v => v.finding_ids?.includes(finding.id))}
+              onVideo={() => act({ op: "video", finding_ids: [finding.id] }, "Free preview")}
+              onOpenVideo={() => setTab("videos")} />}
           </div>
         </div>
       )}
@@ -147,19 +166,16 @@ export default function PortalClient({ engagementId, supabaseUrl, anonKey }: { e
       {tab === "questions" && <Questions qs={questions} onSave={a => act({ op: "answer", answers: a }, "Answers")} onApply={() => act({ op: "apply_answers" }, "Write answers into pages")} />}
 
       {tab === "videos" && (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(340px,1fr))", gap: 14 }}>
-          {videos.map(v => <div key={v.id} className="card">
-            <b>{v.title ?? "Video guide"}</b> <span className="pill">{v.status}</span>
-            {v.status === "ready" && <VideoPlayer sb={sb} v={v} />}
-          </div>)}
-          {!videos.length && <p className="muted">No videos yet. Open a finding and choose "Make a video guide".</p>}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(360px,1fr))", gap: 18 }}>
+          {videos.map(v => <VideoCard key={v.id} v={v} api={api} onUnlock={() => unlock(v.id)} />)}
+          {!videos.length && <p className="muted">No videos yet. Open a finding and choose "Make a free preview".</p>}
         </div>
       )}
     </main>
   );
 }
 
-function FindingDetail({ f, onBack, onOptimize, onVideo }: { f: any; onBack: () => void; onOptimize: () => void; onVideo: () => void }) {
+function FindingDetail({ f, video, onBack, onOptimize, onVideo, onOpenVideo }: { f: any; video?: any; onBack: () => void; onOptimize: () => void; onVideo: () => void; onOpenVideo: () => void }) {
   const phases = ["Define", "Measure", "Analyze", "Improve", "Control"];
   return (
     <div className="card">
@@ -184,7 +200,9 @@ function FindingDetail({ f, onBack, onOptimize, onVideo }: { f: any; onBack: () 
       <ul>{f.evidence.map((e: any, i: number) => <li key={i}>{e.t ? <><code>{e.t}</code> “{e.quote}”</> : <>{e.page}{e.step ? ` step ${e.step}` : ""}</>}</li>)}</ul>
       <div style={{ display: "flex", gap: 8 }}>
         <button className="btn" onClick={onOptimize}>Run an optimization on this</button>
-        <button className="btn violet" onClick={onVideo}>Order a video guide · {VIDEO_PRICE}</button>
+        {video
+          ? <button className="btn violet" onClick={onOpenVideo}>{video.status === "ready" ? "Watch the video guide" : "See the video preview"}</button>
+          : <button className="btn violet" onClick={onVideo}>Make a free preview video</button>}
       </div>
     </div>
   );
@@ -207,17 +225,41 @@ function Questions({ qs, onSave, onApply }: { qs: any[]; onSave: (a: { id: strin
   );
 }
 
-function VideoPlayer({ sb, v }: { sb: any; v: any }) {
+const PREPARING: Record<string, string> = {
+  queued: "Getting ready…", storyboard: "Writing the storyboard…", tts: "Recording the narration…",
+  rendering: "Animating…", checking: "Final checks…", paid: "Payment received. Rendering your full guide…",
+};
+
+function VideoCard({ v, api, onUnlock }: { v: any; api: (p: object) => Promise<{ ok: boolean; body: any }>; onUnlock: () => void }) {
+  const which = v.status === "ready" && v.paid ? "full" : v.preview_path ? "preview" : null;
   const [src, setSrc] = useState<{ mp4: string; vtt?: string } | null>(null);
   useEffect(() => {
-    (async () => {
-      const mp4 = await sb.storage.from("videos").createSignedUrl(v.mp4_path, 3600);
-      const vtt = v.srt_path ? await sb.storage.from("videos").createSignedUrl(v.srt_path.replace(/\.srt$/, ".vtt"), 3600) : null;
-      setSrc({ mp4: mp4.data?.signedUrl, vtt: vtt?.data?.signedUrl });
-    })();
-  }, [sb, v]);
-  if (!src) return null;
-  return <video controls style={{ width: "100%", marginTop: 8, borderRadius: 8 }} src={src.mp4}>
-    {src.vtt && <track kind="captions" src={src.vtt} default srcLang="en" label="English" />}
-  </video>;
+    if (!which) return;
+    api({ op: "video_url", video_id: v.id, which }).then(r => r.ok && setSrc(r.body));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [v.id, which]);
+  const locked = !v.paid;
+  return (
+    <div className="card" style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", gap: 8, alignItems: "baseline" }}>
+        <b>{v.title ?? "Video guide"}</b>
+        <span className={`pill ${v.status === "ready" ? "green" : locked && v.preview_path ? "amber" : ""}`}>
+          {v.status === "ready" ? "Full guide" : v.preview_path ? (v.paid ? "Unlocked · rendering" : "Free preview") : "Preparing"}
+        </span>
+      </div>
+      {src
+        ? <video controls style={{ width: "100%", borderRadius: 14, background: "#1B2B5B" }} src={src.mp4}>
+            {src.vtt && <track kind="captions" src={src.vtt} default srcLang="en" label="English" />}
+          </video>
+        : <div className="arch" style={{ background: "#1B2B5B", color: "#FFF8F3", padding: "70px 20px 24px", textAlign: "center" }}>{PREPARING[v.status] ?? v.status}</div>}
+      {locked && v.preview_path && (
+        <div style={{ background: "#EDE6F6", borderRadius: "40px 40px 16px 16px", padding: "22px 20px 18px", textAlign: "center", display: "flex", flexDirection: "column", gap: 10 }}>
+          <b style={{ fontSize: 18 }}>The preview shows the problem. The full guide shows the fix.</b>
+          <span className="muted" style={{ fontSize: 14 }}>Future state, every build step with the real systems and fields, a DMAIC roadmap and a control plan.</span>
+          <button className="btn violet" onClick={onUnlock}>Unlock the full guide · {VIDEO_PRICE}</button>
+        </div>
+      )}
+      {v.status === "ready" && src && <a href={src.mp4} download style={{ fontSize: 14 }}>Download MP4</a>}
+    </div>
+  );
 }

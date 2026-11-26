@@ -39,6 +39,8 @@ cd services/worker && pip install -r requirements.txt && python worker.py
 
 ## Check before going live (needs real accounts)
 
+- **Stripe**: set `NEXT_PUBLIC_VIDEO_PRICE_CENTS`, `STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET`, and point a webhook at `/api/webhooks/stripe` (`checkout.session.completed`, `checkout.session.async_payment_succeeded`). Test with Stripe's test mode and `stripe trigger`.
+
 - **Room**: test on real laptops, with and without headphones. Laptop speakers bleeding into the mic is the main risk; tune `strict` in `lib/vad.ts` if the interviewer interrupts itself. Screen sharing works in desktop Chrome, Edge and Firefox (not on phones).
 - **Serverless limits**: chunks are capped at 4 MB (5 s of 1.2 Mbps screen ≈ 0.75 MB). Utterance turns need about 10–20 s of function time with a 30 s cap.
 

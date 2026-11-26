@@ -7,6 +7,7 @@ const LABEL: Record<RenderScene["kind"], string> = {
   title: "", current_state: "Current state", waste: "Waste (TIMWOODS)", fishbone: "Root cause analysis",
   metric: "Baseline → target", future_state: "Future state", implementation: "Implementation",
   architecture: "Solution architecture", roadmap: "DMAIC roadmap", control: "Control plan", outro: "Next actions",
+  locked: "The full guide",
 };
 
 function SceneBody({ s }: { s: RenderScene }) {
@@ -23,6 +24,7 @@ function SceneBody({ s }: { s: RenderScene }) {
     case "roadmap": return <S.Roadmap d={s.data} />;
     case "control": return <S.Control d={s.data} />;
     case "outro": return <S.Outro d={s.data} />;
+    case "locked": return <S.Locked d={s.data} />;
   }
 }
 

@@ -11,7 +11,7 @@ const Intake = z.object({
   processes: z.string().min(10).max(4000),   // "what should we look at, and why"
   goals: z.string().max(2000).optional(),
   interviewees: z.array(z.object({ name: z.string().min(2), email: z.string().email(), role: z.string().optional() })).min(1).max(8),
-  video_policy: z.enum(["major", "all", "none"]).default("none"),  // videos are paid; only on request by default
+  video_policy: z.enum(["major", "all", "none"]).default("major"),  // which findings get a FREE preview video
 });
 
 const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40);

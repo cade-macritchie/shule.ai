@@ -284,3 +284,36 @@ export function Outro({ d }: { d: D<"outro"> }) {
     </Pad>
   );
 }
+
+/** End card of a free preview: what the full guide covers, shown frosted behind a lock. */
+export function Locked({ d }: { d: { headline: string; items: { label: string; detail?: string }[]; cta: string; price?: string } }) {
+  const f = useCurrentFrame(); const { fps } = useVideoConfig();
+  const lockIn = spring({ frame: f - 0.6 * fps, fps, config: { damping: 14 } });
+  return (
+    <AbsoluteFill style={{ padding: "10px 80px", display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: 60, alignItems: "center" }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 12, alignSelf: "start", marginTop: 10 }}>
+        {d.items.slice(0, 6).map((it, i) => (
+          <Appear key={i} delay={0.2 + i * 0.25} style={{ background: C.panel, borderRadius: 16, padding: "12px 20px", display: "flex", gap: 18, alignItems: "center" }}>
+            <div style={{ minWidth: 44, height: 44, borderRadius: 22, background: C.line, color: C.ink, fontSize: 22, fontWeight: 800, display: "grid", placeItems: "center" }}>{i + 1}</div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 30, fontWeight: 700 }}>{it.label}</div>
+              {/* never draw the real detail: placeholder bars sized to it, so nothing can be de-blurred */}
+              {it.detail && <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
+                {[0.55, 0.3].map((w, k) => <div key={k} style={{ height: 12, borderRadius: 6, background: C.line, width: `${Math.min(70, 12 + it.detail!.length * w)}%` }} />)}
+              </div>}
+            </div>
+          </Appear>
+        ))}
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 24, textAlign: "center" }}>
+        <div style={{ transform: `scale(${0.6 + 0.4 * lockIn})`, opacity: lockIn, width: 150, height: 180, borderRadius: "75px 75px 22px 22px", background: C.accent, display: "grid", placeItems: "center" }}>
+          <svg width="70" height="80" viewBox="0 0 24 28" fill="none" stroke="#FFF8F3" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <rect x="3" y="12" width="18" height="14" rx="3" /><path d="M7 12V8a5 5 0 0 1 10 0v4" />
+          </svg>
+        </div>
+        <div style={{ fontSize: 52, fontWeight: 800, lineHeight: 1.1 }}>{d.headline}</div>
+        <div style={{ fontSize: 30, color: C.cyan, fontWeight: 700 }}>{d.cta}{d.price ? ` · ${d.price}` : ""}</div>
+      </div>
+    </AbsoluteFill>
+  );
+}

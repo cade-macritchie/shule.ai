@@ -61,13 +61,13 @@ export default function Start() {
         ))}
         <button type="button" className="btn ghost" onClick={() => setPeople(ps => [...ps, { name: "", email: "", role: "" }])}>+ Add person</button>
         <label>Existing docs, screenshots, exports (optional)</label><input name="files" type="file" multiple />
-        <label>Video guides (optional, paid)</label>
-        <select name="video_policy" defaultValue="none">
-          <option value="none">I'll order videos later from my portal (recommended)</option>
-          <option value="major">Make one for each major problem ({VIDEO_PRICE} each)</option>
-          <option value="all">Make one for every finding ({VIDEO_PRICE} each)</option>
+        <label>Video guides</label>
+        <select name="video_policy" defaultValue="major">
+          <option value="major">Free preview videos for major problems (recommended)</option>
+          <option value="all">Free preview videos for every finding</option>
+          <option value="none">No previews, I'll ask from my portal</option>
         </select>
-        <p className="muted" style={{ fontSize: 13, margin: "6px 0 0" }}>Interviews, docs and the audit are free. Video guides are {VIDEO_PRICE} each. <Link href="/how-it-works#pricing">See what's included</Link>.</p>
+        <p className="muted" style={{ fontSize: 13, margin: "6px 0 0" }}>Previews are free. Unlock any full guide for {VIDEO_PRICE}. <Link href="/how-it-works#pricing">See what's included</Link>.</p>
         <p className="muted" style={{ fontSize: 13 }}>Interviews are recorded and handled by an AI interviewer. Personal data on screen is blurred automatically, and raw recordings are deleted after 30 days.</p>
         <button className="btn lg" style={{ marginTop: 8 }} disabled={state === "sending"}>{state === "sending" ? "Sending…" : "Send invitations"}</button>
         {state === "error" && <p style={{ color: "var(--red)" }}>{err}</p>}

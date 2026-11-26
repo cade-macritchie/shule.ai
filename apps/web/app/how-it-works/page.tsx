@@ -25,8 +25,8 @@ const STEPS = [
     body: "We turn the conversation into clear process docs and a Lean Six Sigma audit with prioritized improvements. Anything we couldn't confirm becomes a short question for your team to answer.",
   },
   {
-    when: "Whenever you're ready", title: "Add video guides for the fixes you choose",
-    body: "Pick any improvement and order a short animated video that walks your team through how to build it, step by step.",
+    when: "Free preview, then your choice", title: "Watch a free preview, unlock the full fix",
+    body: "Each major problem comes with a free preview video that shows what's happening and why. When you want the fix, unlock the full guide: the future state, every build step, a roadmap and a control plan.",
   },
 ];
 
@@ -38,9 +38,11 @@ const FREE = [
   "A DMAIC roadmap and control plan for each finding",
   "A questions board, and docs that update as your team answers",
   "Re-run the audit or focus an optimization on one finding",
+  "A free preview video for each major problem: current state, wastes and root cause",
 ];
 
 const VIDEO = [
+  "Everything in the free preview, plus the fix",
   "A 3–6 minute animated guide for one improvement",
   "Current state, root cause, future state and the build steps",
   "The real systems, fields, rules and owners involved",
@@ -49,7 +51,8 @@ const VIDEO = [
 ];
 
 const FAQ = [
-  ["Is the interview and audit really free?", "Yes. The interviews, docs and audit cost nothing. You only pay if you order a video guide, and only for the videos you choose."],
+  ["Is the interview and audit really free?", "Yes. The interviews, docs, audit and preview videos cost nothing. You only pay to unlock a full video guide, and only for the ones you choose."],
+  ["What's in the free preview video?", "The current state of the process, the wastes we found and the root cause, so you can see exactly what the problem is. It ends by listing what the full guide covers."],
   ["Why an AI interviewer?", "It can meet each person when it suits them, ask patient follow-up questions, and turn the conversation into docs right away. People can end the interview at any time."],
   ["Who sees the recordings?", "Only the people in your organization you give portal access to. Personal details on screen are blurred automatically, and raw recordings are deleted after 30 days."],
   ["Can we edit the docs?", "Yes. Answer questions in the portal or approve pages as they are. Answers are written back into the docs."],
@@ -74,7 +77,7 @@ export default function HowItWorks() {
         <h1 className="h-hero" style={{ marginTop: 20 }}>From one conversation to work in <Accent>good order.</Accent></h1>
         <p className="muted" style={{ fontSize: 20, maxWidth: 720 }}>
           Here's exactly what happens when you start an engagement, what your team will be asked to do, and what you get.
-          The interviews, docs and audit are <b style={{ color: BRAND.deep }}>free</b>. Video guides are an optional paid add-on.
+          The interviews, docs and audit are <b style={{ color: BRAND.deep }}>free</b>. Every major problem comes with a free preview video; unlocking the full guide is the only paid step.
         </p>
       </header>
 
@@ -112,14 +115,14 @@ export default function HowItWorks() {
           </div>
           <div style={{ background: BRAND.violet, color: "#fff", borderRadius: "200px 200px 28px 28px", padding: "72px 32px 32px" }}>
             <div style={{ textAlign: "center" }}>
-              <div style={{ fontSize: 14, fontWeight: 700, letterSpacing: ".08em", textTransform: "uppercase", color: BRAND.butter }}>Video implementation guides</div>
+              <div style={{ fontSize: 14, fontWeight: 700, letterSpacing: ".08em", textTransform: "uppercase", color: BRAND.butter }}>Full video guide</div>
               <div style={{ fontSize: 56, fontWeight: 800, letterSpacing: "-.03em", margin: "8px 0 4px" }}>{VIDEO_PRICE}</div>
-              <div style={{ color: "#E4DAF5" }}>per video · order only the ones you want</div>
+              <div style={{ color: "#E4DAF5" }}>per guide · unlock only the ones you want</div>
             </div>
             <ul style={{ margin: "24px 0 28px", paddingLeft: 20, display: "flex", flexDirection: "column", gap: 8 }}>
               {VIDEO.map(f => <li key={f}>{f}</li>)}
             </ul>
-            <p style={{ margin: 0, textAlign: "center", color: "#E4DAF5", fontSize: 15 }}>Order from any finding in your portal after the audit.</p>
+            <p style={{ margin: 0, textAlign: "center", color: "#E4DAF5", fontSize: 15 }}>Watch the free preview first, then unlock from your portal.</p>
           </div>
         </div>
       </section>

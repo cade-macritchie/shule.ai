@@ -50,8 +50,17 @@ export const Storyboard = z.object({
 export type Storyboard = z.infer<typeof Storyboard>;
 export type Scene = z.infer<typeof Scene>;
 
+/** Render-only scene (never from Claude): ends a free preview and lists what the full guide covers. */
+export type LockedScene = {
+  kind: "locked"; narration: string;
+  data: { headline: string; items: { label: string; detail?: string }[]; cta: string; price?: string };
+};
+
 /** Props passed to Remotion after TTS: each scene gets its audio and length. */
-export type RenderScene = Scene & { audio?: string; durationInFrames: number };
+export type RenderScene = (Scene | LockedScene) & { audio?: string; durationInFrames: number };
+
+/** Scenes a free preview shows: the problem, up to and including the root cause (and a real metric if present). */
+export const PREVIEW_KINDS = ["title", "current_state", "waste", "fishbone", "metric"] as const;
 export type RenderProps = { title: string; engagement: string; fps: number; scenes: RenderScene[] };
 
 export const WPM = 140;
