@@ -1,0 +1,11 @@
+{
+  "name": "processscope",
+  "private": true,
+  "workspaces": ["apps/web", "packages/shared", "packages/video"],
+  "scripts": {
+    "dev": "npm run dev -w apps/web",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "npm test --workspaces --if-present",
+    "studio": "npm run studio -w packages/video"
+  }
+}

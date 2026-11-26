@@ -1,0 +1,79 @@
+Here is the audit.
+<audit>
+{
+  "summary": "The deposit-to-registration handoff runs on a weekly emailed export and double data entry, so admitted students wait 6–9 business days for a working ID, and mistyped IDs slip through.",
+  "sipoc": {
+    "suppliers": ["Admitted student", "Payment form"],
+    "inputs": ["Enrollment deposit", "Slate application record"],
+    "process": ["Deposit posts in Slate", "Weekly export to Registrar", "Create student in Jenzabar", "Return IDs and key into Slate", "IT provisions accounts"],
+    "outputs": ["Jenzabar student record", "Email + portal account"],
+    "customers": ["Admitted student", "Registrar", "IT"]
+  },
+  "value_stream": [
+    {"step": "Deposit posts in Slate", "owner": "Student", "system": "Slate", "touch_min": 0, "wait_min": 0, "value": "VA", "source": "stated"},
+    {"step": "Weekly export + email", "owner": "Admissions", "system": "Slate", "touch_min": 10, "wait_min": 3600, "value": "NVA", "source": "estimated", "basis": "Friday batch: average wait of 2.5 business days"},
+    {"step": "Create in Jenzabar", "owner": "Registrar", "system": "Jenzabar", "touch_min": 5, "wait_min": 2160, "value": "BVA", "source": "stated"},
+    {"step": "Key IDs into Slate", "owner": "Admissions", "system": "Slate", "touch_min": 1, "wait_min": null, "value": "NVA", "source": "stated"},
+    {"step": "Provision accounts", "owner": "IT", "system": "Slate", "touch_min": null, "wait_min": 1440, "value": "VA", "source": "stated"}
+  ],
+  "ctq_tree": [{"need": "Register soon after depositing", "driver": "Time to working ID", "ctq": "Deposit → login ≤ 1 business day"}],
+  "defect_data": {"defects": 3, "units": 200, "opportunities": 1, "source": "stated"},
+  "findings": [
+    {
+      "title": "Batch handoff and re-keying delay student IDs by 6–9 days",
+      "summary": "Deposited students are batched weekly, created by hand in Jenzabar, and their IDs are re-typed into Slate before IT can provision.",
+      "page_path": "admissions/enrollment/index.md",
+      "steps": [2, 3, 4],
+      "waste": ["Waiting", "Over-processing", "Defects"],
+      "value": "NVA",
+      "root_causes": [
+        {"m": "Method", "cause": "Handoff is a weekly emailed export", "root": true},
+        {"m": "Machine", "cause": "No Slate ↔ Jenzabar integration"},
+        {"m": "Measurement", "cause": "Wait time isn't tracked"}
+      ],
+      "five_whys": ["Students wait for IDs", "IDs are created in weekly batches", "The Registrar only receives a weekly list", "Admissions exports manually", "There is no automated feed"],
+      "fmea": {"severity": 7, "occurrence": 9, "detection": 5},
+      "impact": 5,
+      "effort": 3,
+      "dmaic": {"start_phase": "Measure", "actions": {
+        "Measure": "Pull deposit and ID timestamps from Slate for last term",
+        "Analyze": "Confirm the wait split between the batch and the Registrar queue",
+        "Improve": "Nightly Slate export → Jenzabar import → ID write-back",
+        "Control": "Weekly median deposit→ID report"}},
+      "recommendation": {
+        "future_state": "Deposited students flow nightly to the Registrar's import, and IDs return to Slate automatically.",
+        "implementation": [
+          {"step": "Queue deposited admits", "system": "Slate", "detail": "Rule: Deposit Paid = Yes AND Jenzabar ID empty → population 'Needs ID'", "owner": "Slate admin"},
+          {"step": "Nightly export", "system": "Slate", "detail": "Scheduled query export to the Registrar's SFTP inbound folder", "owner": "Slate admin"},
+          {"step": "Write IDs back", "system": "Slate", "detail": "Source format maps the Jenzabar ID from the outbound file", "owner": "Slate admin"}
+        ],
+        "poka_yoke": "Reject IDs that don't match the 7-digit pattern into an exceptions queue."
+      },
+      "control_plan": [{"metric": "Median deposit → ID (days)", "target": "≤ 1", "method": "Slate query on timestamps", "owner": "Registrar", "frequency": "Weekly", "reaction": "Review the import log with the Slate admin"}],
+      "evidence": [
+        {"t": "0:00:24", "quote": "every Friday I run an export of everyone who deposited that week and email it to the Registrar"},
+        {"t": "0:01:26", "quote": "from deposit to the student actually being able to log in and register it's like six to nine business days"}
+      ],
+      "confidence": "high"
+    },
+    {
+      "title": "Students email asking why they can't register",
+      "summary": "About a third of deposited students contact admissions at least once while waiting.",
+      "page_path": "admissions/enrollment/index.md",
+      "steps": [2],
+      "waste": ["Over-processing"],
+      "value": "NVA",
+      "root_causes": [{"m": "Method", "cause": "No status message after deposit", "root": true}],
+      "fmea": {"severity": 3, "occurrence": 7, "detection": 2},
+      "impact": 2,
+      "effort": 1,
+      "dmaic": {"start_phase": "Improve", "actions": {"Improve": "Send a 'what happens next' email on deposit"}},
+      "recommendation": {"future_state": "Students know when to expect their ID.",
+        "implementation": [{"step": "Deposit confirmation email", "system": "Slate", "detail": "Deliver mailing triggered by the Deposit Paid rule", "owner": "Admissions"}]},
+      "evidence": [{"t": "0:01:49", "quote": "a third of them email us at least once"}],
+      "confidence": "medium"
+    }
+  ],
+  "questions": [{"importance": "high", "question": "Does the Registrar's Jenzabar import accept a delimited file from SFTP?", "why": "It decides whether the nightly feed is possible without new tooling", "page": "admissions/enrollment/index.md"}]
+}
+</audit>

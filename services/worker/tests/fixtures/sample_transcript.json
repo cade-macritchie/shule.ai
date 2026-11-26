@@ -1,0 +1,16 @@
+[
+  {"speaker": "INTERVIEWER", "is_bot": true, "t_start": 2, "text": "Hi, I'm the ProcessScope interviewer, an AI working with Sample Seminary. This call is being recorded and transcribed so we can write up how your processes work. You can stop at any time. Is it okay with you to go ahead?"},
+  {"speaker": "Dana (Admissions)", "is_bot": false, "t_start": 14, "text": "Yes, that's fine."},
+  {"speaker": "INTERVIEWER", "is_bot": true, "t_start": 17, "text": "Thanks. Let's start with what happens after a student is admitted. What's the first thing that kicks off?"},
+  {"speaker": "Dana (Admissions)", "is_bot": false, "t_start": 24, "text": "So once they pay the enrollment deposit, it posts in Slate, that's automatic through the payment form. Then every Friday I run an export of everyone who deposited that week and email it to the Registrar."},
+  {"speaker": "INTERVIEWER", "is_bot": true, "t_start": 41, "text": "Every Friday. Roughly how many students are on that list in a typical week?"},
+  {"speaker": "Dana (Admissions)", "is_bot": false, "t_start": 46, "text": "In the summer it's like thirty, thirty-five a week. Off-season maybe ten."},
+  {"speaker": "INTERVIEWER", "is_bot": true, "t_start": 53, "text": "Got it, thirty to thirty-five in summer. What happens on the Registrar's side once they get the list?"},
+  {"speaker": "Dana (Admissions)", "is_bot": false, "t_start": 60, "text": "Marcus creates each one in Jenzabar by hand. He says it's about five minutes a student. Usually takes him a day or two to get to it. Then he emails back the list with the Jenzabar IDs and I type each ID into Slate, that's maybe a minute each."},
+  {"speaker": "INTERVIEWER", "is_bot": true, "t_start": 82, "text": "And after the ID is in Slate, what happens next?"},
+  {"speaker": "Dana (Admissions)", "is_bot": false, "t_start": 86, "text": "IT has a report in Slate of new IDs and they set up the email and portal account, usually the next day. So from deposit to the student actually being able to log in and register it's like six to nine business days."},
+  {"speaker": "INTERVIEWER", "is_bot": true, "t_start": 104, "text": "Six to nine business days. Does anything go wrong along the way?"},
+  {"speaker": "Dana (Admissions)", "is_bot": false, "t_start": 109, "text": "Every term we find a couple where the ID got typed wrong and nobody knows until the student calls. Maybe two or three a term out of about two hundred. And students email asking why they can't register yet, I'd say a third of them email us at least once."},
+  {"speaker": "INTERVIEWER", "is_bot": true, "t_start": 131, "text": "That's helpful. If you could fix one thing first, what would it be?"},
+  {"speaker": "Dana (Admissions)", "is_bot": false, "t_start": 136, "text": "Honestly just not having to do the export and the typing. If the ID just showed up in Slate that would save so much back and forth."}
+]

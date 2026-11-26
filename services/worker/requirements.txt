@@ -1,0 +1,10 @@
+anthropic>=0.60
+supabase>=2.10
+pydantic>=2.9
+httpx>=0.27
+pyyaml>=6
+numpy>=1.26
+opencv-python-headless>=4.10
+rapidocr-onnxruntime>=1.3
+faster-whisper>=1.1      # fallback only; Recall's diarized transcript is the default
+pytest>=8

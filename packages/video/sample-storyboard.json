@@ -1,0 +1,129 @@
+{
+  "title": "Deposit → registration handoff",
+  "engagement": "Sample Seminary process review",
+  "scenes": [
+    {
+      "kind": "title",
+      "narration": "This guide covers the biggest bottleneck we found in your admissions process: the handoff between a student paying their enrollment deposit and that student being able to register for classes. We'll walk through what happens today, why it happens, and exactly how to fix it.",
+      "data": { "title": "Deposit → registration handoff", "subtitle": "Admissions · Registrar · IT", "stat": "Admits wait 6–9 business days for an ID (stated)" }
+    },
+    {
+      "kind": "current_state",
+      "narration": "Here's the current flow. When a deposit posts in Slate, an admissions counselor exports a weekly list and emails it to the Registrar. The Registrar creates each student in Jenzabar by hand and emails the new IDs back, then admissions types each ID into Slate. Only then does IT create the account. Notice the red steps: they move information around without changing anything for the student, and each one has a wait in front of it.",
+      "data": {
+        "lanes": [
+          { "owner": "Admissions", "steps": [
+            { "id": "a1", "label": "Deposit posts in Slate", "value": "VA" },
+            { "id": "a2", "label": "Weekly export + email", "value": "NVA", "wait_label": "up to 5 days" },
+            { "id": "a3", "label": "Key IDs into Slate", "value": "NVA" } ] },
+          { "owner": "Registrar", "steps": [
+            { "id": "r1", "label": "Create in Jenzabar by hand", "value": "BVA", "wait_label": "1–2 days" },
+            { "id": "r2", "label": "Email IDs back", "value": "NVA" } ] },
+          { "owner": "IT", "steps": [
+            { "id": "i1", "label": "Create email + portal", "value": "VA", "wait_label": "1 day" } ] }
+        ]
+      }
+    },
+    {
+      "kind": "waste",
+      "narration": "Three of the eight Lean wastes show up here. Waiting, because each batch sits until someone picks it up. Over-processing, because the same student data is typed in two systems. And defects: the Registrar told us mistyped IDs are found every term, usually only when a student can't log in.",
+      "data": { "present": ["Waiting", "Over-processing", "Defects"], "quote": "Every term we find a couple where the ID got typed wrong and nobody knows until the student calls." }
+    },
+    {
+      "kind": "fishbone",
+      "narration": "Why does this happen? The root cause sits under Method: there's no system-to-system handoff, so the process depends on a weekly email. Contributing causes include no shared field for the Jenzabar ID status, and no measurement of how long admits wait.",
+      "data": {
+        "effect": "Admits wait 6–9 days for an ID",
+        "causes": [
+          { "m": "Method", "cause": "Handoff is a weekly emailed export", "root": true },
+          { "m": "Machine", "cause": "No Slate ↔ Jenzabar integration" },
+          { "m": "Material", "cause": "Export columns vary by counselor" },
+          { "m": "Man", "cause": "Only one Registrar staffer creates records" },
+          { "m": "Measurement", "cause": "Wait time isn't tracked" },
+          { "m": "Mother Nature", "cause": "Peaks before term start" }
+        ]
+      }
+    },
+    {
+      "kind": "metric",
+      "narration": "Today the wait from deposit to a working ID is six to nine business days, as reported in the interview. The target is one business day, which is realistic once the batch and the re-keying are gone.",
+      "data": { "label": "Deposit → working student ID", "baseline": "6–9 days", "target": "≤ 1 day", "source": "stated" }
+    },
+    {
+      "kind": "future_state",
+      "narration": "In the future state, the export, the emails and the re-keying disappear. A Slate rule queues each deposited student automatically. The Registrar still creates the Jenzabar record, because that's a required control, but works from a daily queue, and the ID flows back into Slate on its own.",
+      "data": {
+        "lanes": [
+          { "owner": "Admissions", "steps": [
+            { "id": "a1", "label": "Deposit posts in Slate", "value": "VA" },
+            { "id": "a2", "label": "Weekly export + email", "removed": true },
+            { "id": "a3", "label": "Key IDs into Slate", "removed": true } ] },
+          { "owner": "Registrar", "steps": [
+            { "id": "r1", "label": "Create from daily queue", "value": "BVA", "automated": true, "wait_label": "≤ 1 day" },
+            { "id": "r2", "label": "Email IDs back", "removed": true } ] },
+          { "owner": "IT", "steps": [
+            { "id": "i1", "label": "Account auto-provisioned", "value": "VA", "automated": true } ] }
+        ]
+      }
+    },
+    {
+      "kind": "implementation",
+      "narration": "Here's how to build it. First, in Slate, add a rule on the application: when Deposit Paid is set and the Jenzabar ID is empty, add the record to a Needs ID population. Second, publish a nightly query of that population as a delimited file to the SFTP folder the Registrar already uses for imports. Third, run the Jenzabar import job against it, and have the job's output file with the new IDs picked up by a Slate source format that writes the ID back. Finally, add a check: if the ID doesn't match the expected pattern, the record goes to an exceptions queue instead of continuing.",
+      "data": {
+        "steps": [
+          { "title": "Rule: queue deposited admits", "system": "Slate", "detail": "Rule on Application: Deposit Paid = Yes AND Jenzabar ID is null → add to population 'Needs ID'", "owner": "Slate admin" },
+          { "title": "Nightly export", "system": "Slate", "detail": "Query on 'Needs ID' → scheduled export (delimited) to SFTP /registrar/inbound at 02:00", "owner": "Slate admin" },
+          { "title": "Create records", "system": "Jenzabar", "detail": "Scheduled import job reads inbound file, creates person + student records, writes outbound file with IDs", "owner": "Registrar" },
+          { "title": "Write IDs back", "system": "Slate", "detail": "Source format on SFTP /registrar/outbound maps External ID → Jenzabar ID field; removes from population", "owner": "Slate admin" },
+          { "title": "Poka-yoke", "system": "Slate", "detail": "Rule: ID not matching ^\\d{7}$ → 'ID exceptions' queue + email to Registrar; never provisions", "owner": "Slate admin" }
+        ]
+      }
+    },
+    {
+      "kind": "architecture",
+      "narration": "Put together, the data moves in a loop: Slate to the SFTP folder, into Jenzabar, back out to Slate, and on to IT's account provisioning. Nobody has to email anything, and every record is in exactly one queue at a time.",
+      "data": {
+        "nodes": [
+          { "id": "slate", "label": "Slate", "kind": "system" },
+          { "id": "sftp", "label": "SFTP folder", "kind": "data" },
+          { "id": "jz", "label": "Jenzabar import", "kind": "automation" },
+          { "id": "back", "label": "Slate source format", "kind": "automation" },
+          { "id": "it", "label": "IT provisioning", "kind": "system" }
+        ],
+        "edges": [
+          { "from": "slate", "to": "sftp", "label": "nightly export" },
+          { "from": "sftp", "to": "jz" },
+          { "from": "jz", "to": "back", "label": "IDs" },
+          { "from": "back", "to": "it", "label": "ID set" }
+        ]
+      }
+    },
+    {
+      "kind": "roadmap",
+      "narration": "Plan about five weeks. One week to agree on the field mapping and measure the current wait from Slate timestamps. Two weeks to build and test with last term's deposits. One week to pilot with live deposits. Then hand it over to control.",
+      "data": { "phases": [
+        { "phase": "Define", "weeks": "Week 1", "milestone": "Field map signed off" },
+        { "phase": "Measure", "weeks": "Week 1", "milestone": "Baseline from Slate timestamps" },
+        { "phase": "Improve", "weeks": "Weeks 2–4", "milestone": "Build + pilot" },
+        { "phase": "Control", "weeks": "Week 5+", "milestone": "Weekly wait-time report" }
+      ] }
+    },
+    {
+      "kind": "control",
+      "narration": "To keep the gains, track two numbers weekly: median days from deposit to ID, and the number of records in the exceptions queue. If the median goes above one day for two weeks running, the Registrar and the Slate admin review the import log together.",
+      "data": { "rows": [
+        { "metric": "Median deposit → ID (days)", "target": "≤ 1", "owner": "Registrar", "frequency": "Weekly" },
+        { "metric": "Records in ID exceptions", "target": "0 older than 2 days", "owner": "Slate admin", "frequency": "Daily" }
+      ], "chart_label": "Median days, deposit → ID" }
+    },
+    {
+      "kind": "outro",
+      "narration": "Three next steps. The Slate admin drafts the rule and the query this week. The Registrar confirms the Jenzabar import format. And admissions pulls the baseline wait so you can show the improvement.",
+      "data": { "actions": [
+        { "action": "Draft the Needs ID rule + export query", "owner": "Slate admin" },
+        { "action": "Confirm the Jenzabar import format", "owner": "Registrar" },
+        { "action": "Pull the baseline wait from Slate", "owner": "Admissions" }
+      ] }
+    }
+  ]
+}
