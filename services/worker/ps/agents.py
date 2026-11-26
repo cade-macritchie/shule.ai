@@ -102,7 +102,7 @@ def invite_client(p: dict):
                                          "options": {"redirect_to": f"{BASE}/portal/{eng['id']}"}})
     user_id = res.user.id
     db().table("org_members").upsert({"org_id": eng["org_id"], "user_id": user_id, "role": "client_admin"}).execute()
-    send_email(p["email"], "Your ProcessScope portal", f"""
+    send_email(p["email"], "Your shule portal", f"""
 <p>We've invited your interviewees. Track progress, and later read the docs, findings and video guides, in your portal:</p>
 <p><a href="{res.properties.action_link}">Open the portal →</a></p>""")
 
@@ -198,7 +198,7 @@ def recall_media(iv: dict, work: Path) -> list[dict]:
     # Prefer Recall's post-call (diarized) transcript over the live one.
     if urls["transcript"]:
         download(urls["transcript"], work / "transcript.json")
-        bot_name = os.environ.get("BOT_NAME", "ProcessScope Interviewer")
+        bot_name = os.environ.get("BOT_NAME", "shule interviewer")
         rows = []
         for seg in json.loads((work / "transcript.json").read_text()):
             words = seg.get("words") or []
@@ -248,7 +248,7 @@ def split_frontmatter(md: str) -> tuple[dict, str]:
     return (yaml.safe_load(m.group(1)) or {}, md[m.end():]) if m else ({}, md)
 
 
-def save_page(eng_id: str, path: str, md: str, message: str, author="ProcessScope", status=None):
+def save_page(eng_id: str, path: str, md: str, message: str, author="shule", status=None):
     meta, _ = split_frontmatter(md)
     meta = json.loads(json.dumps(meta, default=str))
     cur = _one("pages", engagement_id=eng_id, path=path)
@@ -578,7 +578,7 @@ def follow_up(p: dict):
 
 def notify_staff(p: dict):
     if to := os.environ.get("STAFF_EMAIL"):
-        send_email(to, f"[ProcessScope] {p.get('subject', 'attention needed')}", f"<pre>{json.dumps(p, indent=2)}</pre>")
+        send_email(to, f"[shule] {p.get('subject', 'attention needed')}", f"<pre>{json.dumps(p, indent=2)}</pre>")
 
 
 HANDLERS = {

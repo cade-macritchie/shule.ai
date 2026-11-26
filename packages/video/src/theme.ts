@@ -1,6 +1,7 @@
+// shule brand (Studio + chapel accent), dark variant for video.
 export const C = {
-  bg: "#0b1020", panel: "#121a33", line: "#24305a", ink: "#e8ecf8", mute: "#8b96b8",
-  accent: "#6d7cff", cyan: "#38bdf8", red: "#f05252", amber: "#f5a524", green: "#2fd67b",
+  bg: "#1B2B5B", panel: "#24376E", line: "#3A4E86", ink: "#FFF8F3", mute: "#C3CBE6",
+  accent: "#C8402B", cyan: "#FFD27A", red: "#F0857A", amber: "#FFD27A", green: "#6FD3A6", violet: "#8E6CC9",
 };
-export const font = "Inter, 'Segoe UI', system-ui, sans-serif";
+export const font = "'Plus Jakarta Sans', Inter, 'Segoe UI', system-ui, sans-serif";
 export const valueColor = (v?: string) => (v === "NVA" ? C.red : v === "BVA" ? C.amber : v === "VA" ? C.green : C.mute);

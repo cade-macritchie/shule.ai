@@ -1,4 +1,4 @@
-# ProcessScope: an agentic process-interview → ops docs → Lean Six Sigma audit → explainer video service
+# shule (formerly ProcessScope): agentic process interviews → ops docs → Lean Six Sigma audit → explainer videos
 
 > **Update:** interviews now run in ProcessScope's own **browser interview room** (§2a) by default: no Zoom, no meeting bot.
 > The Zoom + Recall.ai path below still works with `INTERVIEW_MEDIUM=zoom`.

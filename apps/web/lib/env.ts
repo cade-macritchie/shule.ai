@@ -14,6 +14,6 @@ export const env = {
   get recallKey() { return req("RECALL_API_KEY"); },
   get recallRegion() { return process.env.RECALL_REGION ?? "us-west-2"; },
   get recallSecret() { return req("RECALL_WEBHOOK_SECRET"); },
-  get botName() { return process.env.BOT_NAME ?? "ProcessScope Interviewer"; },
+  get botName() { return process.env.BOT_NAME ?? "shule interviewer"; },
   get ttsProvider() { return (process.env.TTS_PROVIDER ?? "elevenlabs") as "elevenlabs" | "openai" | "none"; },
 };

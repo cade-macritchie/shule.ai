@@ -1,4 +1,4 @@
-# ProcessScope
+# shule
 
 An agentic service that runs from intake to finished deliverables: outreach and booking → an AI interviewer in **your own browser interview room** (Zoom + Recall optional) → interactive ops docs → a Lean Six Sigma audit → animated implementation videos. The full design is in **[SPEC.md](SPEC.md)**.
 

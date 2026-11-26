@@ -1,4 +1,4 @@
-"""ProcessScope worker: claims jobs from Supabase and runs ps.agents handlers.
+"""shule worker: claims jobs from Supabase and runs ps.agents handlers.
 
   python worker.py                 # loop forever
   python worker.py --once          # one job then exit

@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { Accent, Logo, StainedGlass } from "@/components/brand";
 
 type Person = { name: string; email: string; role: string };
 
@@ -26,17 +27,21 @@ export default function Start() {
 
   if (state === "done") return (
     <main className="wrap" style={{ maxWidth: 680 }}>
-      <div className="card"><h2>You're all set</h2>
-        <p>Each person you listed will get an email with a booking link shortly. You'll get a link to your portal, where the docs and findings will appear after the interviews.</p></div>
+      <div style={{ padding: "8px 0 24px" }}><Logo /></div>
+      <div className="card arch" style={{ paddingTop: 72, textAlign: "center" }}><h2 style={{ fontSize: 34 }}>You're <Accent>all set.</Accent></h2>
+        <p className="muted">Each person you listed will get an email with a booking link shortly. You'll also get a link to your portal, where the docs and findings appear after the interviews.</p></div>
     </main>
   );
 
   const set = (i: number, k: keyof Person, v: string) => setPeople(ps => ps.map((p, j) => (j === i ? { ...p, [k]: v } : p)));
 
   return (
-    <main className="wrap" style={{ maxWidth: 680 }}>
-      <h1>Start an engagement</h1>
-      <form className="card" onSubmit={submit}>
+    <main className="wrap" style={{ maxWidth: 720 }}>
+      <div style={{ padding: "8px 0 24px" }}><Logo /></div>
+      <h1 style={{ fontSize: 44, margin: "0 0 8px" }}>Start an <Accent>engagement.</Accent></h1>
+      <p className="muted" style={{ marginTop: 0 }}>Tell us which work to look at and who carries it. We'll take it from there.</p>
+      <div style={{ borderRadius: "24px 24px 0 0", overflow: "hidden", marginTop: 24 }}><StainedGlass height={56} crop={720} /></div>
+      <form className="card" style={{ borderTopLeftRadius: 0, borderTopRightRadius: 0, padding: 28 }} onSubmit={submit}>
         <label>Company</label><input name="company" required />
         <label>Your name</label><input name="contact_name" required />
         <label>Your email</label><input name="contact_email" type="email" required />
@@ -60,7 +65,7 @@ export default function Start() {
           <option value="none">Only when I ask</option>
         </select>
         <p className="muted" style={{ fontSize: 13 }}>Interviews are recorded and handled by an AI interviewer. Personal data on screen is blurred automatically, and raw recordings are deleted after 30 days.</p>
-        <button className="btn" disabled={state === "sending"}>{state === "sending" ? "Sending…" : "Send invitations"}</button>
+        <button className="btn lg" style={{ marginTop: 8 }} disabled={state === "sending"}>{state === "sending" ? "Sending…" : "Send invitations"}</button>
         {state === "error" && <p style={{ color: "var(--red)" }}>{err}</p>}
       </form>
     </main>

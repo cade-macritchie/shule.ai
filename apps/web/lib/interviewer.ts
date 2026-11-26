@@ -12,7 +12,7 @@ export type Action = "none" | "ask_screen_share" | "wrap_up" | "end";
 export type Turn = { say: string; action: Action; phase: string };
 
 export const CONSENT_SCRIPT = (org: string) =>
-  `Hi, I'm the ProcessScope interviewer, an AI working with ${org}. ` +
+  `Hi, I'm the shule interviewer, an AI working with ${org}. ` +
   `This call is being recorded and transcribed so we can write up how your processes work. ` +
   `You can stop at any time. Is it okay with you to go ahead?`;
 

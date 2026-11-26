@@ -1,5 +1,5 @@
 [
-  {"speaker": "INTERVIEWER", "is_bot": true, "t_start": 2, "text": "Hi, I'm the ProcessScope interviewer, an AI working with Sample Seminary. This call is being recorded and transcribed so we can write up how your processes work. You can stop at any time. Is it okay with you to go ahead?"},
+  {"speaker": "INTERVIEWER", "is_bot": true, "t_start": 2, "text": "Hi, I'm the shule interviewer, an AI working with Sample Seminary. This call is being recorded and transcribed so we can write up how your processes work. You can stop at any time. Is it okay with you to go ahead?"},
   {"speaker": "Dana (Admissions)", "is_bot": false, "t_start": 14, "text": "Yes, that's fine."},
   {"speaker": "INTERVIEWER", "is_bot": true, "t_start": 17, "text": "Thanks. Let's start with what happens after a student is admitted. What's the first thing that kicks off?"},
   {"speaker": "Dana (Admissions)", "is_bot": false, "t_start": 24, "text": "So once they pay the enrollment deposit, it posts in Slate, that's automatic through the payment form. Then every Friday I run an export of everyone who deposited that week and email it to the Registrar."},

@@ -5,6 +5,7 @@ import { marked } from "marked";
 import DOMPurify from "dompurify";
 import { ProcessMap, type PageRow } from "@/components/ProcessMap";
 import { FindingsMatrix, WasteHeat, type FindingRow } from "@/components/FindingsMatrix";
+import { Accent, Logo, StainedGlass } from "@/components/brand";
 
 type Tab = "map" | "findings" | "questions" | "videos";
 const body = (md: string) => md.replace(/^---[\s\S]*?\n---\n/, "");
@@ -58,8 +59,9 @@ export default function PortalClient({ engagementId, supabaseUrl, anonKey }: { e
   }
 
   if (!session) return (
-    <main className="wrap" style={{ maxWidth: 480, paddingTop: 80 }}>
-      <div className="card"><h2>Sign in to your portal</h2>
+    <main className="wrap" style={{ maxWidth: 480, paddingTop: 48 }}>
+      <div style={{ paddingBottom: 24 }}><Logo /></div>
+      <div className="card arch" style={{ paddingTop: 64 }}><h2 style={{ textAlign: "center" }}>Sign in to your <Accent>portal.</Accent></h2>
         <input placeholder="you@company.com" value={email} onChange={e => setEmail(e.target.value)} />
         <button className="btn" style={{ marginTop: 12 }} onClick={async () => {
           await sb.auth.signInWithOtp({ email, options: { emailRedirectTo: location.href } }); setBusy("Check your email for a sign-in link.");
@@ -77,7 +79,9 @@ export default function PortalClient({ engagementId, supabaseUrl, anonKey }: { e
 
   return (
     <main className="wrap">
-      <h1 style={{ marginBottom: 0 }}>{eng?.title ?? "…"}</h1>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingBottom: 16 }}><Logo size={28} /><span className="muted" style={{ fontSize: 14 }}>{session.user.email}</span></div>
+      <div style={{ borderRadius: 16, overflow: "hidden", marginBottom: 20 }}><StainedGlass height={28} /></div>
+      <h1 style={{ marginBottom: 0, fontSize: 36 }}>{eng?.title ?? "…"}</h1>
       <div className="muted">Status: {eng?.status} · {pages.length} pages · {findings.length} findings · {questions.filter(q => q.status === "open").length} open questions</div>
       <div className="tabs">
         {(["map", "findings", "questions", "videos"] as Tab[]).map(t => <button key={t} className={tab === t ? "on" : ""} onClick={() => setTab(t)}>{t[0].toUpperCase() + t.slice(1)}</button>)}
@@ -97,7 +101,7 @@ export default function PortalClient({ engagementId, supabaseUrl, anonKey }: { e
               <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(marked.parse(body(page.markdown).replace(/^:::sensitive-hidden \d+$/gm, "> 🔒 Restricted section")) as string) }} />
               {findings.filter(f => f.page_path === page.path).map(f => (
                 <div key={f.id} className="card" style={{ borderColor: "#fecaca", marginTop: 10 }}>
-                  <b>⚠ #{f.rank} {f.title}</b> <span className="pill red">RPN {f.rpn}</span>
+                  <b>#{f.rank} {f.title}</b> <span className="pill red">RPN {f.rpn}</span>
                   <div>{f.summary}</div>
                   <a href="#" onClick={e => { e.preventDefault(); setTab("findings"); setPicked(f.id); }}>See the improvement →</a>
                 </div>
@@ -179,7 +183,7 @@ function FindingDetail({ f, onBack, onOptimize, onVideo }: { f: any; onBack: () 
       <ul>{f.evidence.map((e: any, i: number) => <li key={i}>{e.t ? <><code>{e.t}</code> “{e.quote}”</> : <>{e.page}{e.step ? ` step ${e.step}` : ""}</>}</li>)}</ul>
       <div style={{ display: "flex", gap: 8 }}>
         <button className="btn" onClick={onOptimize}>Run an optimization on this</button>
-        <button className="btn ghost" onClick={onVideo}>🎬 Make a video guide</button>
+        <button className="btn violet" onClick={onVideo}>Make a video guide</button>
       </div>
     </div>
   );
