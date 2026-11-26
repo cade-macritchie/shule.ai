@@ -79,7 +79,7 @@ export default function Company() {
         {SERVE.map(s => <span key={s} style={{ border: "1px solid #E5D3C6", borderRadius: 999, padding: "10px 18px", fontWeight: 600, fontSize: 15 }}>{s}</span>)}
       </section>
 
-      <CtaBand>Know your constraint, and the first fix, <Accent color="#fff">this month.</Accent></CtaBand>
+      <CtaBand />
       <SiteFooter />
     </main>
   );

@@ -94,7 +94,7 @@ export default function Pricing() {
         </div>
       </section>
 
-      <CtaBand>Start free. Your first interview could happen <Accent color="#fff">this week.</Accent></CtaBand>
+      <CtaBand />
       <SiteFooter />
     </main>
   );

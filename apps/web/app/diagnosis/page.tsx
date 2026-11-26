@@ -67,7 +67,7 @@ export default function Diagnosis() {
         </p>
       </section>
 
-      <CtaBand>Know your constraint, and the first fix, <Accent color="#fff">this month.</Accent></CtaBand>
+      <CtaBand />
       <SiteFooter />
     </main>
   );

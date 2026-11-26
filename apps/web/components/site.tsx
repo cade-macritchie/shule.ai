@@ -90,12 +90,17 @@ export function SiteFooter() {
   );
 }
 
-/** Coral call-to-action band used at the bottom of most pages. */
-export function CtaBand({ children, href = SERVICE.start(), label = "Start free" }: { children: ReactNode; href?: string; label?: string }) {
+/** Coral call-to-action band used at the bottom of every page. */
+export function CtaBand({ href = SERVICE.start(), label = "Start free", children }: { href?: string; label?: string; children?: ReactNode }) {
   return (
     <section className="section" style={{ paddingTop: 64 }}>
       <div style={{ background: BRAND.coral, color: "#fff", borderRadius: 28, padding: 40, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 24, flexWrap: "wrap" }}>
-        <h2 style={{ margin: 0, fontSize: "clamp(26px, 3.4vw, 38px)", fontWeight: 800, maxWidth: 760 }}>{children}</h2>
+        <div style={{ maxWidth: 780 }}>
+          <h2 style={{ margin: 0, fontSize: "clamp(26px, 3.4vw, 38px)", fontWeight: 800 }}>
+            {children ?? <>Take the next step on removing your <Accent color="#fff">#1 constraint.</Accent></>}
+          </h2>
+          <p style={{ margin: "10px 0 0", fontSize: 18, color: "#FFE4DC" }}>Not sure what it is? We can help you find it.</p>
+        </div>
         <Link className="btn lg" href={href} style={{ background: BRAND.warm, color: BRAND.deep }}>{label}</Link>
       </div>
     </section>

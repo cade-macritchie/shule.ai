@@ -77,7 +77,7 @@ export default async function ConstraintPage({ params }: Props) {
         <div style={{ marginTop: 18 }}><ConstraintRow current={c.id} /></div>
       </section>
 
-      <CtaBand href={SERVICE.start(c.id)} label="Start free">Find what's really causing it, <Accent color="#fff">this month.</Accent></CtaBand>
+      <CtaBand href={SERVICE.start(c.id)} label="Start free" />
       <SiteFooter />
     </main>
   );
