@@ -1,6 +1,8 @@
 "use client";
 import { useState } from "react";
+import Link from "next/link";
 import { Accent, Logo, StainedGlass } from "@/components/brand";
+import { VIDEO_PRICE } from "@/lib/pricing";
 
 type Person = { name: string; email: string; role: string };
 
@@ -59,12 +61,13 @@ export default function Start() {
         ))}
         <button type="button" className="btn ghost" onClick={() => setPeople(ps => [...ps, { name: "", email: "", role: "" }])}>+ Add person</button>
         <label>Existing docs, screenshots, exports (optional)</label><input name="files" type="file" multiple />
-        <label>Video guides</label>
-        <select name="video_policy" defaultValue="major">
-          <option value="major">Generate for major problems</option>
-          <option value="all">Generate for every finding</option>
-          <option value="none">Only when I ask</option>
+        <label>Video guides (optional, paid)</label>
+        <select name="video_policy" defaultValue="none">
+          <option value="none">I'll order videos later from my portal (recommended)</option>
+          <option value="major">Make one for each major problem ({VIDEO_PRICE} each)</option>
+          <option value="all">Make one for every finding ({VIDEO_PRICE} each)</option>
         </select>
+        <p className="muted" style={{ fontSize: 13, margin: "6px 0 0" }}>Interviews, docs and the audit are free. Video guides are {VIDEO_PRICE} each. <Link href="/how-it-works#pricing">See what's included</Link>.</p>
         <p className="muted" style={{ fontSize: 13 }}>Interviews are recorded and handled by an AI interviewer. Personal data on screen is blurred automatically, and raw recordings are deleted after 30 days.</p>
         <button className="btn lg" style={{ marginTop: 8 }} disabled={state === "sending"}>{state === "sending" ? "Sending…" : "Send invitations"}</button>
         {state === "error" && <p style={{ color: "var(--red)" }}>{err}</p>}

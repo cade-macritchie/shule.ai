@@ -6,6 +6,7 @@ import DOMPurify from "dompurify";
 import { ProcessMap, type PageRow } from "@/components/ProcessMap";
 import { FindingsMatrix, WasteHeat, type FindingRow } from "@/components/FindingsMatrix";
 import { Accent, Logo, StainedGlass } from "@/components/brand";
+import { VIDEO_PRICE } from "@/lib/pricing";
 
 type Tab = "map" | "findings" | "questions" | "videos";
 const body = (md: string) => md.replace(/^---[\s\S]*?\n---\n/, "");
@@ -23,7 +24,7 @@ export default function PortalClient({ engagementId, supabaseUrl, anonKey }: { e
   const [open, setOpen] = useState<string | null>(null);
   const [picked, setPicked] = useState<string | null>(null);
   const [email, setEmail] = useState("");
-  const [withVideo, setWithVideo] = useState(true);
+  const [withVideo, setWithVideo] = useState(false);
   const [busy, setBusy] = useState("");
 
   useEffect(() => {
@@ -126,7 +127,7 @@ export default function PortalClient({ engagementId, supabaseUrl, anonKey }: { e
             <div className="card">
               <h3 style={{ marginTop: 0 }}>Run again</h3>
               <label style={{ display: "flex", gap: 8, alignItems: "center", fontWeight: 400 }}>
-                <input type="checkbox" style={{ width: "auto" }} checked={withVideo} onChange={e => setWithVideo(e.target.checked)} /> Generate a video guide
+                <input type="checkbox" style={{ width: "auto" }} checked={withVideo} onChange={e => setWithVideo(e.target.checked)} /> Also order a video guide ({VIDEO_PRICE})
               </label>
               <button className="btn" onClick={() => act({ op: "audit", generate_video: withVideo }, "Audit")}>Run full audit</button>
             </div>
@@ -183,7 +184,7 @@ function FindingDetail({ f, onBack, onOptimize, onVideo }: { f: any; onBack: () 
       <ul>{f.evidence.map((e: any, i: number) => <li key={i}>{e.t ? <><code>{e.t}</code> “{e.quote}”</> : <>{e.page}{e.step ? ` step ${e.step}` : ""}</>}</li>)}</ul>
       <div style={{ display: "flex", gap: 8 }}>
         <button className="btn" onClick={onOptimize}>Run an optimization on this</button>
-        <button className="btn violet" onClick={onVideo}>Make a video guide</button>
+        <button className="btn violet" onClick={onVideo}>Order a video guide · {VIDEO_PRICE}</button>
       </div>
     </div>
   );

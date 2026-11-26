@@ -21,8 +21,8 @@ export default function Home() {
       <nav className="section nav" style={{ paddingTop: 24, paddingBottom: 12 }}>
         <Logo />
         <div className="nav-links">
-          <a href="#how">How it works</a>
-          <a href="#deliver">What you get</a>
+          <Link href="/how-it-works">How it works</Link>
+          <Link href="/how-it-works#pricing">Pricing</Link>
           <a href="#who">Who we serve</a>
           <Link className="btn" href="/start">Get started</Link>
         </div>
@@ -35,10 +35,11 @@ export default function Home() {
           <p className="muted" style={{ margin: 0, fontSize: 20, maxWidth: 600 }}>
             A 45-minute conversation with our AI interviewer becomes living docs, a Lean Six Sigma audit, and step-by-step
             videos for the biggest fixes, so your people spend less time on busywork and more time on students.
+            Interviews, docs and the audit are free.
           </p>
           <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
-            <Link className="btn lg" href="/start">Start an engagement</Link>
-            <a className="btn ghost lg" href="#how">How it works</a>
+            <Link className="btn lg" href="/start">Start free</Link>
+            <Link className="btn ghost lg" href="/how-it-works">How it works</Link>
           </div>
         </div>
         <div className="arch" style={{ background: BRAND.deep, color: BRAND.warm, padding: "96px 28px 28px", display: "flex", flexDirection: "column", gap: 16 }}>
@@ -85,7 +86,7 @@ export default function Home() {
       <section className="section">
         <div style={{ background: BRAND.coral, color: "#fff", borderRadius: 28, padding: 44, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 24, flexWrap: "wrap" }}>
           <h2 style={{ margin: 0, fontSize: "clamp(28px, 3.5vw, 40px)", fontWeight: 800, maxWidth: 760 }}>
-            Your first process interview could happen <Accent color="#fff">this week.</Accent>
+            Start free. Your first interview could happen <Accent color="#fff">this week.</Accent>
           </h2>
           <Link className="btn lg" href="/start" style={{ background: BRAND.warm, color: BRAND.deep }}>Start an engagement</Link>
         </div>
