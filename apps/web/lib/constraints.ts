@@ -7,6 +7,8 @@ export const CONSTRAINTS = [
     symptom: "Inquiries come in, but too few become enrolled students.",
     lookAt: "Inquiry follow-up, visits, applications, admission decisions, deposits and the first day: every handoff a family goes through.",
     know: "Conversion and days between each stage, and where families drop off.",
+    broken: "Inquiries wait days for a first reply",
+    missing: "No follow-up after tours, and no ambassador families telling their friends",
   },
   {
     id: "margin",
@@ -14,6 +16,8 @@ export const CONSTRAINTS = [
     symptom: "Every seat is full of work, but the budget still doesn't close.",
     lookAt: "The cost to serve each student: admin hours, aid and discount decisions, re-enrollment, scheduling and class sizes.",
     know: "Net tuition against the real cost to serve, and the margin per student.",
+    broken: "Aid is decided case by case, late, by email",
+    missing: "No tuition model: nobody knows the real cost to serve one student",
   },
   {
     id: "teachers",
@@ -21,6 +25,8 @@ export const CONSTRAINTS = [
     symptom: "Roles stay open for months, and good people leave tired.",
     lookAt: "The hiring pipeline from posting to first day, onboarding, and the admin work that pulls teachers away from teaching.",
     know: "Time to hire, offer acceptance, and the hours a week teachers lose to admin.",
+    broken: "Applications sit in an inbox for two weeks",
+    missing: "Hiring runs on word of mouth: no LinkedIn presence, no Christian-college pipeline, no referral program",
   },
   {
     id: "experience",
@@ -28,6 +34,8 @@ export const CONSTRAINTS = [
     symptom: "Bigger schools feel smoother and more personal to families.",
     lookAt: "The family journey: response times, visits, onboarding and communication, and the handoffs families can feel.",
     know: "Response times, handoffs per family, and where things get dropped. Experience is a process, not a budget.",
+    broken: "Parent questions bounce between the office and teachers",
+    missing: "No plan for a new family's first 90 days, so the welcome depends on who picks up the phone",
   },
   {
     id: "cac",
@@ -35,6 +43,8 @@ export const CONSTRAINTS = [
     symptom: "You spend on marketing and recruiting, but can't say what each new student costs.",
     lookAt: "Marketing and recruiting spend, staff time, and the counts at every stage of the funnel.",
     know: "Cost to acquire each student (CAC), conversion by stage, and how long tuition takes to pay it back.",
+    broken: "Inquiry source is typed in three different ways",
+    missing: "Marketing and recruiting spend are never tied to the families they brought in",
   },
 ] as const;
 

@@ -1,161 +1,86 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Accent, BRAND, Logo, VERSE } from "@/components/brand";
+import { Accent, BRAND } from "@/components/brand";
+import { CtaBand, H2, SERVICE, SERVE, SiteFooter, SiteNav } from "@/components/site";
 import { CONSTRAINTS } from "@/lib/constraints";
-import { DELIVERABLE_ART } from "@/components/DeliverableArt";
 import bellImg from "./textures/school-bell.webp";
 
-const STEPS = [
-  { n: 1, title: "Name your constraint", body: "Tell us what's holding the school back and who knows that work best. We handle invitations, booking and reminders.", bg: BRAND.blush, fg: "#A8341F" },
-  { n: 2, title: "Your people just talk", body: "A patient AI interviewer asks how the work really runs, where it waits and what goes wrong. Screen sharing welcome.", bg: "#EDE6F6", fg: "#4A2F7A" },
-  { n: 3, title: "Fix the right thing first", body: "A diagnosis of what is really holding the constraint in place, with the evidence, then a remedy for each cause, ranked by how much it frees the constraint.", bg: "#FFF0CC", fg: "#7A5200" },
+// The company page: who shule is, and its services. Each service has its own pages under its base path.
+const WHY = [
+  { t: "Built for Christian education", b: "Schools, colleges, seminaries and ministry offices: mission-driven teams with small staffs and full plates." },
+  { t: "Your people's knowledge, written down", b: "The way the work really runs lives in a few heads. We capture it in conversation and turn it into docs you keep." },
+  { t: "Free to start", b: "Interviews, docs and the diagnosis cost nothing. You pay only for the remedies you choose to unlock." },
 ];
 
-const DELIVERABLES = [
-  { k: "Docs", title: "Docs your team will use", body: "An interactive map of how the work really runs, with owners, systems and open questions, kept current as answers come in.", bg: BRAND.blush, fg: BRAND.deep, sub: BRAND.ink2 },
-  { k: "Diagnosis", title: "An audit aimed at your constraint", body: "Wastes, root causes, missing practices and risk scores, each tied to the constraint it holds back and backed by a quote from the interview.", bg: BRAND.butter, fg: BRAND.deep, sub: BRAND.deep },
-  { k: "Remedy", title: "Videos that teach the fix", body: "A short animated guide for each major remedy: what changes, why, and what it looks like when it's working. Free preview first.", bg: BRAND.violet, fg: "#fff", sub: "#E4DAF5" },
-  { k: "Build it", title: "A step-by-step guide and an AI prompt", body: "Numbered build steps for each remedy, plus a ready-to-paste prompt so your team can implement it with an AI assistant.", bg: BRAND.deep, fg: "#fff", sub: "#D9DEEC" },
-];
-
-// Not every constraint comes from a broken process. Often it's a practice the school never started.
-const MISSING = [
-  { c: "Can't find good teachers", broken: "Applications sit in an inbox for two weeks", missing: "Hiring runs on word of mouth: no LinkedIn presence, no Christian-college pipeline, no referral program" },
-  { c: "Not enough students", broken: "Inquiries wait days for a first reply", missing: "No follow-up after tours, and no ambassador families telling their friends" },
-  { c: "Students aren't profitable", broken: "Aid is decided case by case, late, by email", missing: "No tuition model: nobody knows the real cost to serve one student" },
-  { c: "Don't know your CAC", broken: "Inquiry source is typed in three different ways", missing: "Marketing and recruiting spend are never tied to the families they brought in" },
-];
-
-
-const SERVE = ["Christian K–12 and classical schools", "Christian colleges and universities", "Seminaries", "Churches and ministry offices"];
-const TINTS = [[BRAND.blush, "#A8341F"], ["#EDE6F6", "#4A2F7A"], ["#FFF0CC", "#7A5200"], [BRAND.blush, "#A8341F"], ["#EDE6F6", "#4A2F7A"]];
-
-export default function Home() {
+export default function Company() {
   return (
     <main>
-      <nav className="section nav" style={{ paddingTop: 24, paddingBottom: 12 }}>
-        <Logo />
-        <div className="nav-links">
-          <a href="#constraints">Constraints</a>
-          <Link href="/how-it-works">How it works</Link>
-          <Link href="/how-it-works#pricing">Pricing</Link>
-          <Link className="btn" href="/start">Start free</Link>
-        </div>
-      </nav>
+      <SiteNav area="company" />
 
-      <header className="section hero" style={{ paddingTop: 32, paddingBottom: 56 }}>
+      <header className="section hero" style={{ paddingTop: 32, paddingBottom: 48 }}>
         <div style={{ display: "flex", flexDirection: "column", gap: 22 }}>
           <span className="eyebrow" style={{ alignSelf: "flex-start" }}>For Christian schools, colleges and seminaries</span>
-          <h1 className="h-hero">Find the constraint holding your <Accent>mission</Accent> back.</h1>
-          <p className="muted" style={{ margin: 0, fontSize: 20, maxWidth: 620 }}>
-            Every school is limited by something: too few students, thin margins, teaching roles you can't fill, an
-            experience bigger schools outspend you on, or not knowing what a student costs to win. One conversation
-            with the people who do the work shows where it's stuck and what to fix first. Free.
+          <h1 className="h-hero">Help your school run in <Accent>good order.</Accent></h1>
+          <p className="muted" style={{ margin: 0, fontSize: 20, maxWidth: 600 }}>
+            shule helps Christian schools find what's holding their mission back and fix it, using AI-led interviews
+            with the people who do the work and proven process improvement.
           </p>
           <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
-            <Link className="btn lg" href="/start">Find my constraint</Link>
-            <Link className="btn ghost lg" href="/how-it-works">How it works</Link>
+            <Link className="btn lg" href="#services">Our services</Link>
+            <Link className="btn ghost lg" href={SERVICE.start()}>Start free</Link>
           </div>
         </div>
         <div style={{ position: "relative", display: "grid", placeItems: "center" }}>
           <div aria-hidden className="hero-board tex-chalk" />
-          <Image src={bellImg} alt="A brass school hand bell, mid-ring" priority sizes="(max-width: 900px) 70vw, 440px"
-            style={{ position: "relative", width: "min(100%, 440px)", height: "auto", filter: "drop-shadow(0 30px 36px rgba(10,14,30,.35))" }} />
-          <div className="card" style={{ position: "absolute", left: 0, bottom: 4, maxWidth: 260, padding: 16, borderRadius: 18 }}>
-            <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: ".08em", textTransform: "uppercase", color: BRAND.violet }}>Constraint found</div>
-            <div style={{ fontWeight: 800, margin: "4px 0" }}>Deposit → registration handoff</div>
-            <div className="muted" style={{ fontSize: 14 }}>Admitted students wait 6–9 days for an ID. Fix first: a nightly automated handoff.</div>
-          </div>
+          <Image src={bellImg} alt="A brass school hand bell, mid-ring" priority sizes="(max-width: 900px) 70vw, 420px"
+            style={{ position: "relative", width: "min(100%, 420px)", height: "auto", filter: "drop-shadow(0 30px 36px rgba(10,14,30,.35))" }} />
         </div>
       </header>
 
       <div className="section"><div className="beam-rule" /></div>
 
-      <section id="constraints" className="section" style={{ paddingTop: 64 }}>
-        <h2 style={{ fontSize: "clamp(32px, 4vw, 46px)", fontWeight: 800, margin: "0 0 8px", textAlign: "center" }}>Which constraint is <Accent>yours?</Accent></h2>
-        <p className="muted" style={{ textAlign: "center", maxWidth: 640, margin: "0 auto 36px", fontSize: 18 }}>
-          Lean Six Sigma starts with the constraint: improve anything else and nothing really changes.
-          Pick yours, and the interviews and audit aim straight at it.
-        </p>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))", gap: 18 }}>
-          {CONSTRAINTS.map((c, i) => (
-            <Link key={c.id} href={`/start?constraint=${c.id}`} className="card" style={{ textDecoration: "none", color: BRAND.deep, borderRadius: "120px 120px 22px 22px", padding: "54px 22px 22px", display: "flex", flexDirection: "column", gap: 10 }}>
-              <div style={{ width: 40, height: 40, borderRadius: "50%", alignSelf: "center", display: "grid", placeItems: "center", fontWeight: 800, background: TINTS[i][0], color: TINTS[i][1] }}>{i + 1}</div>
-              <h3 style={{ margin: 0, fontSize: 20, fontWeight: 800, textAlign: "center" }}>{c.title}</h3>
-              <p className="accent" style={{ margin: 0, fontSize: 19, color: BRAND.violet, textAlign: "center", lineHeight: 1.3 }}>“{c.symptom}”</p>
-              <p style={{ margin: 0, fontSize: 14, color: BRAND.ink2 }}><b style={{ color: BRAND.deep }}>We look at:</b> {c.lookAt}</p>
-              <p style={{ margin: 0, fontSize: 14, color: BRAND.ink2 }}><b style={{ color: BRAND.deep }}>You'll know:</b> {c.know}</p>
-              <span style={{ marginTop: "auto", fontWeight: 700, color: BRAND.coral, fontSize: 15 }}>Start here →</span>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      <section id="how" className="section" style={{ paddingTop: 64 }}>
-        <div className="beam-rule" style={{ marginBottom: 28 }} />
-        <div className="card cols3" style={{ padding: 40, borderRadius: 28 }}>
-          {STEPS.map(s => (
-            <div key={s.n} style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              <div style={{ width: 48, height: 60, background: s.bg, color: s.fg, fontWeight: 800, fontSize: 20, display: "grid", placeItems: "center", borderRadius: "24px 24px 8px 8px" }}>{s.n}</div>
-              <h3 style={{ margin: 0, fontSize: 22, fontWeight: 800 }}>{s.title}</h3>
-              <p className="muted" style={{ margin: 0 }}>{s.body}</p>
+      <section id="services" className="section" style={{ paddingTop: 64 }}>
+        <H2>Our <Accent>services.</Accent></H2>
+        <p className="muted" style={{ textAlign: "center", margin: "0 auto 28px", maxWidth: 600, fontSize: 18 }}>Each service is its own engagement, with its own pages and pricing.</p>
+        <article className="card" style={{ padding: 0, borderRadius: 28, overflow: "hidden", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))" }}>
+          <div style={{ padding: 36, display: "flex", flexDirection: "column", gap: 14 }}>
+            <span style={{ fontSize: 13, fontWeight: 800, letterSpacing: ".1em", textTransform: "uppercase", color: BRAND.violet }}>Service · available now</span>
+            <h3 style={{ margin: 0, fontSize: 34, fontWeight: 800, letterSpacing: "-.02em" }}>{SERVICE.name}</h3>
+            <p className="muted" style={{ margin: 0, fontSize: 17 }}>
+              Find the one constraint holding the school back, see what's causing it, and get a remedy for each cause:
+              docs, a Lean Six Sigma diagnosis, short videos and a step-by-step build guide with an AI prompt.
+            </p>
+            <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 6 }}>
+              <Link className="btn" href={SERVICE.base}>Explore {SERVICE.name}</Link>
+              <Link className="btn ghost" href={SERVICE.pricing}>Pricing</Link>
             </div>
-          ))}
-        </div>
-      </section>
-
-      <section id="missing" className="section" style={{ paddingTop: 72 }}>
-        <h2 style={{ fontSize: "clamp(30px, 4vw, 44px)", fontWeight: 800, margin: "0 0 8px", textAlign: "center" }}>Broken, or <Accent>missing?</Accent></h2>
-        <p className="muted" style={{ textAlign: "center", maxWidth: 680, margin: "0 auto 32px", fontSize: 18 }}>
-          Sometimes the process works fine and the constraint comes from something the school has never started doing.
-          The diagnosis looks for both: what to fix, and what to begin.
-        </p>
-        <div className="tex-chalk" style={{ borderRadius: 28, padding: 20, boxShadow: "inset 0 0 0 8px #6B4226, inset 0 0 60px rgba(0,0,0,.45)" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 14, padding: 12 }}>
-            {MISSING.map(m => (
-              <div key={m.c} style={{ background: "rgba(255,248,243,.96)", borderRadius: 18, padding: 20, display: "flex", flexDirection: "column", gap: 10 }}>
-                <h3 style={{ margin: 0, fontSize: 18, fontWeight: 800 }}>{m.c}</h3>
-                <p style={{ margin: 0, fontSize: 14, color: BRAND.ink2 }}><b style={{ color: BRAND.coral }}>Fix what's broken:</b> {m.broken}</p>
-                <p style={{ margin: 0, fontSize: 14, color: BRAND.ink2 }}><b style={{ color: BRAND.violet }}>Start what's missing:</b> {m.missing}</p>
-              </div>
+          </div>
+          <div className="tex-chalk" style={{ padding: 28, display: "flex", flexDirection: "column", gap: 10, justifyContent: "center" }}>
+            <span style={{ color: "#F4F1EA", fontWeight: 700, fontSize: 14, opacity: .85 }}>It starts with one of these:</span>
+            {CONSTRAINTS.map(c => (
+              <Link key={c.id} href={SERVICE.constraint(c.id)} style={{ background: "rgba(255,248,243,.95)", borderRadius: 12, padding: "10px 14px", fontWeight: 700, textDecoration: "none", color: BRAND.deep }}>
+                {c.title} →
+              </Link>
             ))}
           </div>
-        </div>
+        </article>
       </section>
 
-      <section id="deliver" className="section" style={{ paddingTop: 72, paddingBottom: 40 }}>
-        <h2 style={{ fontSize: "clamp(30px, 4vw, 44px)", fontWeight: 800, margin: "0 0 28px", textAlign: "center" }}>From diagnosis to <Accent>remedy.</Accent></h2>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))", gap: 18 }}>
-          {DELIVERABLES.map((d, i) => { const Art = DELIVERABLE_ART[i]; return (
-            <div key={d.title} style={{ background: d.bg, color: d.fg, borderRadius: "120px 120px 24px 24px", padding: "48px 20px 28px", textAlign: "center", display: "flex", flexDirection: "column", gap: 10 }}>
-              <div style={{ borderRadius: 16, overflow: "hidden", boxShadow: "0 8px 20px rgba(27,43,91,.14)", marginBottom: 6 }}><Art /></div>
-              <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: ".1em", textTransform: "uppercase", color: d.sub, opacity: .85 }}>{i + 1} · {d.k}</div>
-              <h3 style={{ margin: 0, fontSize: 21, fontWeight: 800 }}>{d.title}</h3>
-              <p style={{ margin: 0, color: d.sub }}>{d.body}</p>
-            </div>
-          ); })}
-        </div>
+      <section className="section cols3" style={{ paddingTop: 64 }}>
+        {WHY.map(w => (
+          <div key={w.t} style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            <h3 style={{ margin: 0, fontSize: 21, fontWeight: 800 }}>{w.t}</h3>
+            <p className="muted" style={{ margin: 0 }}>{w.b}</p>
+          </div>
+        ))}
       </section>
 
-      <section id="who" className="section" style={{ display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "center", paddingBottom: 48 }}>
+      <section className="section" style={{ display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "center", paddingTop: 48 }}>
         {SERVE.map(s => <span key={s} style={{ border: "1px solid #E5D3C6", borderRadius: 999, padding: "10px 18px", fontWeight: 600, fontSize: 15 }}>{s}</span>)}
       </section>
 
-      <section className="section">
-        <div style={{ background: BRAND.coral, color: "#fff", borderRadius: 28, padding: 44, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 24, flexWrap: "wrap" }}>
-          <h2 style={{ margin: 0, fontSize: "clamp(28px, 3.5vw, 40px)", fontWeight: 800, maxWidth: 760 }}>
-            Know your constraint, and the first fix, <Accent color="#fff">this month.</Accent>
-          </h2>
-          <Link className="btn lg" href="/start" style={{ background: BRAND.warm, color: BRAND.deep }}>Start free</Link>
-        </div>
-      </section>
-
-      <footer className="section" style={{ padding: "40px 24px 48px" }}>
-        <div className="tex-wood" style={{ borderRadius: 24, padding: 22, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
-          <span style={{ background: "rgba(255,248,243,.95)", borderRadius: 14, padding: "10px 16px", fontSize: 14, color: BRAND.ink2 }}>© shule · Process interviews, docs and improvement for education and ministry</span>
-          <span className="accent" style={{ background: "rgba(255,248,243,.95)", borderRadius: 14, padding: "8px 16px", fontSize: 20, color: BRAND.violet }}>“{VERSE.text}” {VERSE.ref}</span>
-        </div>
-      </footer>
+      <CtaBand>Know your constraint, and the first fix, <Accent color="#fff">this month.</Accent></CtaBand>
+      <SiteFooter />
     </main>
   );
 }

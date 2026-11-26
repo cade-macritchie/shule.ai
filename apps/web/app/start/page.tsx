@@ -92,7 +92,7 @@ export default function Start() {
           <option value="all">Free preview videos for every finding</option>
           <option value="none">No previews, I'll ask from my portal</option>
         </select>
-        <p className="muted" style={{ fontSize: 13, margin: "6px 0 0" }}>Previews are free. Unlock any full guide for {VIDEO_PRICE}. <Link href="/how-it-works#pricing">See what's included</Link>.</p>
+        <p className="muted" style={{ fontSize: 13, margin: "6px 0 0" }}>Previews are free. Unlock any full guide for {VIDEO_PRICE}. <Link href="/diagnosis/pricing">See what's included</Link>.</p>
         <p className="muted" style={{ fontSize: 13 }}>Interviews are recorded and handled by an AI interviewer. Personal data on screen is blurred automatically, and raw recordings are deleted after 30 days.</p>
         <button className="btn lg" style={{ marginTop: 8 }} disabled={state === "sending"}>{state === "sending" ? "Sending…" : "Send invitations"}</button>
         {state === "error" && <p style={{ color: "var(--red)" }}>{err}</p>}

@@ -55,9 +55,26 @@ table.t { width: 100%; border-collapse: collapse; font-size: 14px; } table.t td,
 .nav-links { display: flex; gap: 28px; align-items: center; font-weight: 600; font-size: 15px; flex-wrap: wrap; }
 .nav-links a { text-decoration: none; }
 .h-hero { font-size: clamp(44px, 6vw, 76px); line-height: 1.02; margin: 0; }
+.nav { position: relative; z-index: 20; }
+.service-tag { font-size: 13px; font-weight: 700; color: #5B3E8F; background: #EDE6F6; border-radius: 999px; padding: 6px 12px; text-decoration: none; white-space: nowrap; }
+.menu { position: relative; }
+.menu > summary { list-style: none; cursor: pointer; font-weight: 600; }
+.menu > summary::-webkit-details-marker { display: none; }
+.menu > summary::after { content: " ▾"; font-size: 12px; }
+.menu-panel { position: absolute; top: calc(100% + 10px); left: -12px; min-width: 280px; background: #fff; border-radius: 16px;
+  box-shadow: 0 18px 40px rgba(27,43,91,.16); padding: 8px; display: flex; flex-direction: column; z-index: 30; }
+.menu-panel.right { left: auto; right: 0; }
+.menu-panel a { padding: 10px 12px; border-radius: 10px; text-decoration: none; font-weight: 600; font-size: 15px; }
+.menu-panel a.sub { padding-left: 24px; font-weight: 500; font-size: 14px; }
+.menu-panel a:hover { background: #FFF2EA; }
+.mobile-menu { display: none; }
 @media (max-width: 900px) {
   .cols3, .hero { grid-template-columns: 1fr; }
-  .nav-links a:not(.btn) { display: none; }
+  .nav-links { display: none; }
+  .mobile-menu { display: block; }
+  .nav { flex-wrap: nowrap; }
+  .service-tag { display: none; }
+  .mobile-menu > summary { background: #1B2B5B; color: #fff; border-radius: 999px; padding: 10px 18px; }
 }
 
 /* brand textures (generated in brand-assets/; see BRAND.md). url()s are relative so Next bundles them with the right base path */
