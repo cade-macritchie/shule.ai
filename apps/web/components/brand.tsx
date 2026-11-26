@@ -1,4 +1,5 @@
 // Shule brand pieces (Studio + chapel accent). Tokens live in app/globals.css.
+import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
 
 export const BRAND = {
@@ -24,10 +25,10 @@ export function Mark({ size = 40 }: { size?: number }) {
 
 export function Logo({ size = 34, light = false }: { size?: number; light?: boolean }) {
   return (
-    <a href="/" style={{ display: "inline-flex", alignItems: "center", gap: size * 0.3, textDecoration: "none", color: light ? BRAND.warm : BRAND.deep }}>
+    <Link href="/" prefetch={false} style={{ display: "inline-flex", alignItems: "center", gap: size * 0.3, textDecoration: "none", color: light ? BRAND.warm : BRAND.deep }}>
       <Mark size={size * 1.25} />
       <span style={{ fontSize: size * 0.85, fontWeight: 800, letterSpacing: "-0.04em" }}>shule</span>
-    </a>
+    </Link>
   );
 }
 

@@ -21,6 +21,7 @@ export default function Start() {
     const body = new FormData();
     body.set("intake", JSON.stringify(intake));
     for (const file of f.getAll("files")) body.append("files", file);
+    if (process.env.NEXT_PUBLIC_DEMO === "1") { setState("error"); setErr("This is a design preview on GitHub Pages, so the form isn't connected. Nothing was sent."); return; }
     const r = await fetch("/api/intake", { method: "POST", body });
     if (r.ok) setState("done"); else { setState("error"); setErr(await r.text()); }
   }

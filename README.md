@@ -11,6 +11,10 @@ prompts/          interviewer, interview_plan, outline, draft, handbook (shared 
 supabase/         schema + RLS + queue RPCs + storage buckets
 ```
 
+## Preview on GitHub Pages
+
+The landing page and intake form are published as a static preview at **https://cade-macritchie.github.io/shule.ai/**, rebuilt on every push to `main` (`.github/workflows/pages.yml` → `gh-pages` branch). The form is disabled there; the room, portal and APIs need the real app. Build it locally with `scripts/build-pages.sh`.
+
 ## Run it
 
 ```bash

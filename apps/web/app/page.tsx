@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Accent, BRAND, Logo, StainedGlass, VERSE } from "@/components/brand";
 
 const STEPS = [
@@ -23,7 +24,7 @@ export default function Home() {
           <a href="#how">How it works</a>
           <a href="#deliver">What you get</a>
           <a href="#who">Who we serve</a>
-          <a className="btn" href="/start">Get started</a>
+          <Link className="btn" href="/start">Get started</Link>
         </div>
       </nav>
 
@@ -36,7 +37,7 @@ export default function Home() {
             videos for the biggest fixes, so your people spend less time on busywork and more time on students.
           </p>
           <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
-            <a className="btn lg" href="/start">Start an engagement</a>
+            <Link className="btn lg" href="/start">Start an engagement</Link>
             <a className="btn ghost lg" href="#how">How it works</a>
           </div>
         </div>
@@ -86,7 +87,7 @@ export default function Home() {
           <h2 style={{ margin: 0, fontSize: "clamp(28px, 3.5vw, 40px)", fontWeight: 800, maxWidth: 760 }}>
             Your first process interview could happen <Accent color="#fff">this week.</Accent>
           </h2>
-          <a className="btn lg" href="/start" style={{ background: BRAND.warm, color: BRAND.deep }}>Start an engagement</a>
+          <Link className="btn lg" href="/start" style={{ background: BRAND.warm, color: BRAND.deep }}>Start an engagement</Link>
         </div>
       </section>
 
